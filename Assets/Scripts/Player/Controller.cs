@@ -9,10 +9,8 @@ using UnityEngine.InputSystem;
 public class Controller : MonoBehaviour
 {
     [Header("GameObject/Component References")]
-    [Tooltip("The animator controller used to animate the player.")]
-    public RuntimeAnimatorController animator = null;
     [Tooltip("The Rigidbody2D component to use in \"Astroids Mode\".")]
-    public Rigidbody2D myRigidbody = null;
+    public Rigidbody myRigidbody = null;
 
     [Header("Movement Variables")]
     [Tooltip("The speed at which the player will move.")]
@@ -97,8 +95,6 @@ public class Controller : MonoBehaviour
     {
         // Collect input and move the player accordingly
         HandleInput();
-        // Sends information to an animator component if one is assigned
-        SignalAnimator();
     }
 
     /// <summary>
@@ -136,6 +132,7 @@ public class Controller : MonoBehaviour
         // Get movement input from the inputManager
         Vector3 movementVector = new Vector3(inputManager.horizontalMoveAxis, inputManager.verticalMoveAxis, 0);
         // Move the player
+        //Debug.Log("received inputs" + movementVector);
         MovePlayer(movementVector);
         LookAtPoint(lookPosition);
     }
@@ -148,14 +145,6 @@ public class Controller : MonoBehaviour
     /// Returns: 
     /// void (no return)
     /// </summary>
-    private void SignalAnimator()
-    {
-        // Handle Animation
-        if (animator != null)
-        {
-
-        }
-    }
 
     /// <summary>
     /// Description:
@@ -200,7 +189,7 @@ public class Controller : MonoBehaviour
             // If no rigidbody is assigned, assign one
             if (myRigidbody == null)
             {
-                myRigidbody = GetComponent<Rigidbody2D>();
+                myRigidbody = GetComponent<Rigidbody>();
             }
 
             // Move the player using physics
