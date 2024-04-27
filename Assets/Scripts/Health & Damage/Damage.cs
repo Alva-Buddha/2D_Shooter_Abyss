@@ -19,24 +19,19 @@ public class Damage : MonoBehaviour
     [Tooltip("Whether or not to destroy the attached game object after dealing damage")]
     public bool destroyAfterDamage = true;
     [Tooltip("Whether or not to apply damage when triggers collide")]
-    public bool dealDamageOnTriggerEnter = true;
-    [Tooltip("Whether or not to apply damage when triggers stay, for damage over time")]
-    public bool dealDamageOnTriggerStay = false;
+    public bool DamageOnTrigEnter = true;
     [Tooltip("Whether or not to apply damage on non-trigger collider collisions")]
-    public bool dealDamageOnCollision = false;
+    public bool dealDamageOnCollision = true;
 
     /// <summary>
-    /// Description: 
-    /// Standard Unity function called whenever a Collider2D enters any attached 2D trigger collider
-    /// Inputs:
-    /// Collider2D collision
-    /// Returns:
-    /// void (no return)
+    /// Standard Unity function called whenever a Collider (3D) enters any attached 3D trigger collider
+    /// Inputs: Collider collision
+    /// Returns: void (no return)
     /// </summary>
-    /// <param name="collision">The SphereCollider that set of the function call</param>
+    /// <param name="collision">The Collider that set of the function call</param>
     private void OnTriggerEnter(Collider collision)
     {
-        if (dealDamageOnTriggerEnter)
+        if (DamageOnTrigEnter)
         {
             DealDamage(collision.gameObject);
         }
@@ -44,30 +39,11 @@ public class Damage : MonoBehaviour
 
     /// <summary>
     /// Description:
-    /// Standard Unity function called every frame a Collider2D stays in any attached 2D trigger collider
-    /// Inputs:
-    /// Collider2D collision
-    /// Returns:
-    /// void (no return)
+    /// Standard Unity function called when a Collider hits another Collider (non-triggers)
+    /// Inputs: Collision collision
+    /// Returns: void (no return)
     /// </summary>
-    /// <param name="collision">The Collider2D that set of the function call</param>
-    private void OnTriggerStay(Collider collision)
-    {
-        if (dealDamageOnTriggerStay)
-        {
-            DealDamage(collision.gameObject);
-        }
-    }
-
-    /// <summary>
-    /// Description:
-    /// Standard Unity function called when a Collider2D hits another Collider2D (non-triggers)
-    /// Inputs:
-    /// Collision2D collision
-    /// Returns:
-    /// void (no return)
-    /// </summary>
-    /// <param name="collision">The Collision2D that set of the function call</param>
+    /// <param name="collision">The Collision that set of the function call</param>
     private void OnCollisionEnter(Collision collision)
     {
         if (dealDamageOnCollision)
@@ -77,15 +53,12 @@ public class Damage : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
     /// This function deals damage to a health component if the collided 
     /// with gameobject has a health component attached AND it is on a different team.
-    /// Inputs:
-    /// GameObject collisionGameObject
-    /// Returns:
-    /// void (no return)
+    /// Inputs: GameObject collisionGameObject
+    /// Returns: void (no return)
     /// </summary>
-    /// <param name="collisionGameObject">The game object that has been collided with</param>
+    ///<param name="collisionGameObject">The game object that has been collided with</param>
     private void DealDamage(GameObject collisionGameObject)
     {
         Health collidedHealth = collisionGameObject.GetComponent<Health>();

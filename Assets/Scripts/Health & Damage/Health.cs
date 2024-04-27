@@ -5,8 +5,6 @@ using UnityEngine;
 
 /// <summary>
 /// This class handles the health state of a game object.
-/// 
-/// Implementation Notes: 2D Rigidbodies must be set to never sleep for this to interact with trigger stay damage
 /// </summary>
 public class Health : MonoBehaviour
 {
@@ -34,27 +32,11 @@ public class Health : MonoBehaviour
     [Tooltip("The maximum number of lives this health can have")]
     public int maximumLives = 5;
 
-    /// <summary>
-    /// Description:
-    /// Standard unity funciton called before the first frame update
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
-    /// </summary>
     void Start()
     {
         SetRespawnPoint(transform.position);
     }
 
-    /// <summary>
-    /// Description:
-    /// Standard Unity function called once per frame
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
-    /// </summary>
     void Update()
     {
         InvincibilityCheck();

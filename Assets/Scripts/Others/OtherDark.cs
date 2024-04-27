@@ -3,40 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// A class which controls enemy behaviour
+/// A class which controls OtherDark behaviour
 /// </summary>
 public class OtherDark : MonoBehaviour
 {
     [Header("Settings")]
-    [Tooltip("The speed at which the enemy moves.")]
+    [Tooltip("The speed at which the OtherDark moves.")]
     public float moveSpeed = 5.0f;
-    [Tooltip("The score value for defeating this enemy")]
+    [Tooltip("The score value for defeating this OtherDark")]
     public int scoreValue = 5;
 
-    [Header("Following Settings")]
-    [Tooltip("The transform of the object that this enemy should follow.")]
-    public Transform followTarget = null;
-    [Tooltip("The distance at which the enemy begins following the follow target.")]
-    public float followRange = 10.0f;
+    [Header("Avoiding Settings")]
+    [Tooltip("The transform of the object that this OtherDark should Avoid.")]
+    public Transform avoidTarget = null;
+    [Tooltip("The distance at which the OtherDark begins Avoiding the Avoid target.")]
+    public float avoidTargetRange = 5.0f;
+
+    [Header("Flocking Settings")]
+    [Tooltip("Enable or disable flocking behavior.")]
+    public bool useFlocking = true;
+    [Tooltip("The radius to detect neighboring boids.")]
+    public float neighborRadius = 10.0f;
+    [Tooltip("The radius to maintain distance from neighboring boids for separation.")]
+    public float avoidOtherRadius = 1.0f;
+
+    private List<Transform> neighbors;
+    public LayerMask neighborLayerMask; // Define which layer boids are on for neighbor detection
+    private float updateInterval = 0.1f; // How often to update neighbors list in seconds
+    private float nextUpdateTime = 0;
 
     /// <summary>
     /// Enum to help wih different movement modes
     /// </summary>
-    public enum MovementModes { NoMovement, FollowTarget };
+    public enum MovementModes { NoMovement, avoidTarget };
 
-    [Tooltip("The way this enemy will move\n" +
-        "NoMovement: This enemy will not move.\n" +
-        "FollowTarget: This enemy will follow the assigned target.\n" +
-        "Scroll: This enemy will move in one horizontal direction only.")]
-    public MovementModes movementMode = MovementModes.FollowTarget;
+    [Tooltip("The way this OtherDark will move\n" +
+        "NoMovement: This OtherDark will not move.\n" +
+        "avoidTarget: This OtherDark will Avoid the assigned target.\n" +
+        "Scroll: This OtherDark will move in one horizontal direction only.")]
+    public MovementModes movementMode = MovementModes.avoidTarget;
 
     /// <summary>
-    /// Description:
+    /// Standard Unity function called once before the first call to Update
+    /// </summary>
+    private void Start()
+    {
+        neighbors = new List<Transform>();
+        nextUpdateTime = Time.time + updateInterval;
+    }
+
+    /// <summary>
     /// Standard Unity function called after update every frame
-    /// Inputs: 
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     private void LateUpdate()
     {
@@ -44,50 +61,124 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
-    /// Standard Unity function called once before the first call to Update
-    /// Input:
-    /// none
-    /// Return:
-    /// void (no return)
+    /// Handles moving in accordance with the OtherDark's set behaviour
     /// </summary>
-    private void Start()
+    private void HandleBehaviour()
     {
-        if (movementMode == MovementModes.FollowTarget && followTarget == null)
+        // Check if the target is in range, then move
+        if (avoidTarget != null && (avoidTarget.position - transform.position).magnitude < avoidTargetRange)
         {
-            if (GameManager.instance != null && GameManager.instance.player != null)
+            avoidTargetMove();
+        }
+        if (useFlocking)
+        {
+            if (Time.time > nextUpdateTime)
             {
-                followTarget = GameManager.instance.player.transform;
+                UpdateNeighbors();
+                nextUpdateTime = Time.time + updateInterval;
+            }
+            Flock();
+        }
+    }
+
+    /// <summary>
+    /// Combines the flocking behaviors to determine the enemy's next move.
+    /// </summary>
+    private void Flock()
+    {
+        CleanUpNeighbors();
+        
+        Vector3 alignment = Alignment();
+        Vector3 cohesion = Cohesion();
+        Vector3 separation = Separation();
+
+        // Combine the behaviors with possibly different weights
+        Vector3 moveDirection = alignment + cohesion + separation;
+        Vector3 movement = moveDirection * Time.deltaTime * moveSpeed; 
+        transform.position += movement;
+        RotateTowardsMovement(movement);
+    }
+
+    /// <summary>
+    /// Calculates the average direction of nearby boids for alignment.
+    /// </summary>
+    /// <returns>Vector3 representing the average heading of nearby boids.</returns>
+    private Vector3 Alignment()
+    {
+        Vector3 alignVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            alignVector += neighbor.forward;  // Assuming forward is the moving direction
+        }
+        alignVector /= neighbors.Count;
+
+        return alignVector.normalized;
+    }
+
+    /// <summary>
+    /// Calculates the center of mass of nearby boids for cohesion.
+    /// </summary>
+    /// <returns>Vector3 pointing towards the center of mass.</returns>
+    private Vector3 Cohesion()
+    {
+        Vector3 cohesionVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            cohesionVector += neighbor.position;
+        }
+        cohesionVector /= neighbors.Count;
+        cohesionVector -= transform.position;
+
+        return cohesionVector.normalized;
+    }
+
+    /// <summary>
+    /// Calculates a vector to keep distance from nearby boids for separation.
+    /// </summary>
+    /// <returns>Vector3 to move away from nearby boids.</returns>
+    private Vector3 Separation()
+    {
+        Vector3 separationVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            if ((neighbor.position - transform.position).magnitude < avoidOtherRadius)
+            {
+                separationVector -= (neighbor.position - transform.position);
+            }
+        }
+
+        return separationVector.normalized;
+    }
+
+    /// <summary>
+    /// Updates the list of nearby boids to be considered for flocking.
+    /// </summary>
+    private void UpdateNeighbors()
+    {
+        neighbors.Clear(); // Clear the existing list
+        Collider[] colliders = Physics.OverlapSphere(transform.position, neighborRadius, neighborLayerMask);
+        foreach (Collider collider in colliders)
+        {
+            if (collider.transform != transform) // Avoid adding self
+            {
+                neighbors.Add(collider.transform);
             }
         }
     }
 
     /// <summary>
-    /// Description:
-    /// Handles moving and shooting in accordance with the enemy's set behaviour
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
+    /// Clears any null or destroyed objects from the neighbors list.
     /// </summary>
-    private void HandleBehaviour()
+    private void CleanUpNeighbors()
     {
-        // Check if the target is in range, then move
-        if (followTarget != null && (followTarget.position - transform.position).magnitude < followRange)
-        {
-            MoveEnemy();
-        }
+        neighbors.RemoveAll(item => item == null || item.gameObject == null);
     }
 
+
     /// <summary>
-    /// Description:
     /// This is meant to be called before destroying the gameobject associated with this script
     /// It can not be replaced with OnDestroy() because of Unity's inability to distiguish between unloading a scene
     /// and destroying the gameobject from the Destroy function
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// void (no return)
     /// </summary>
     public void DoBeforeDestroy()
     {
@@ -97,12 +188,7 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
-    /// Adds to the game manager's score the score associated with this enemy if one exists
-    /// Input:
-    /// None
-    /// Returns:
-    /// void (no return)
+    /// Adds to the game manager's score the score associated with this OtherDark if one exists
     /// </summary>
     private void AddToScore()
     {
@@ -113,12 +199,7 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
-    /// Increments the game manager's number of defeated enemies
-    /// Input:
-    /// none
-    /// Return:
-    /// void (no return)
+    /// Description: Increments the game manager's number of defeated enemies
     /// </summary>
     private void IncrementEnemiesDefeated()
     {
@@ -129,108 +210,38 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
-    /// Moves the enemy and rotates it according to it's movement mode
-    /// Inputs: none
-    /// Returns: 
-    /// void (no return)
+    /// Moves the OtherDark
     /// </summary>
-    private void MoveEnemy()
+    private void avoidTargetMove()
     {
         // Determine correct movement
-        Vector3 movement = GetDesiredMovement();
+        Vector3 movement = GetAvoidTargetMovement();
 
-        // Determine correct rotation
-        Quaternion rotationToTarget = GetDesiredRotation();
-
-        // Move and rotate the enemy
+        // Move the OtherDark
         transform.position = transform.position + movement;
-        transform.rotation = rotationToTarget;
     }
 
     /// <summary>
-    /// Description:
-    /// Calculates the movement of this enemy
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// Vector3
+    /// The direction and magnitude of the OtherDark's desired movement in Avoid mode
     /// </summary>
-    /// <returns>Vector3: The movement of this enemy</returns>
-    protected virtual Vector3 GetDesiredMovement()
+    /// <returns>Vector3: The movement to be used in Avoid movement mode.</returns>
+    private Vector3 GetAvoidTargetMovement()
     {
-        Vector3 movement;
-        switch (movementMode)
-        {
-            case MovementModes.FollowTarget:
-                movement = GetFollowPlayerMovement();
-                break;
-            default:
-                movement = Vector3.zero;
-                break;
-        }
-        return movement;
-    }
-
-    /// <summary>
-    /// Description:
-    /// Calculates and returns the desired rotation of this enemy
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// Quaternion
-    /// </summary>
-    /// <returns>Quaternion: The desired rotation</returns>
-    protected virtual Quaternion GetDesiredRotation()
-    {
-        Quaternion rotation;
-        switch (movementMode)
-        {
-            case MovementModes.FollowTarget:
-                rotation = GetFollowPlayerRotation();
-                break;
-            default:
-                rotation = transform.rotation; ;
-                break;
-        }
-        return rotation;
-    }
-
-    /// <summary>
-    /// Description:
-    /// The direction and magnitude of the enemy's desired movement in follow mode
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// Vector3
-    /// </summary>
-    /// <returns>Vector3: The movement to be used in follow movement mode.</returns>
-    private Vector3 GetFollowPlayerMovement()
-    {
-        Vector3 moveDirection = (followTarget.position - transform.position).normalized;
+        Vector3 moveDirection = -(avoidTarget.position - transform.position).normalized;
         Vector3 movement = moveDirection * moveSpeed * Time.deltaTime;
+        RotateTowardsMovement(movement);
         return movement;
     }
 
     /// <summary>
-    /// Description
-    /// The desired rotation of follow movement mode
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// Quaternion
+    /// Rotates the OtherDark to instantly face the direction it is moving.
     /// </summary>
-    /// <returns>Quaternion: The rotation to be used in follow movement mode.</returns>
-    private Quaternion GetFollowPlayerRotation()
+    /// <param name="moveDirection">The direction of movement.</param>
+    private void RotateTowardsMovement(Vector3 moveDirection)
     {
-        float angle = Vector3.SignedAngle(Vector3.down, (followTarget.position - transform.position).normalized, Vector3.forward);
-        Quaternion rotationToTarget = Quaternion.Euler(0, 0, angle);
-        return rotationToTarget;
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(gameObject.name + " collided with " + collision.collider.name);
-        // Additional logic to check conditions
+        if (moveDirection != Vector3.zero) // Prevent rotation towards zero vector
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
     }
 }

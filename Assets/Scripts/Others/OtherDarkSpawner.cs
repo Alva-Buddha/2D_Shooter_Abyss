@@ -30,7 +30,7 @@ public class OtherDarkSpawner : MonoBehaviour
     public bool spawnInfinite = true;
 
     // The number of enemies that have been spawned
-    private int currentlySpawned = 0;
+    public int currentlySpawned = 0;
 
     [Tooltip("The time delay between spawning enemies")]
     public float spawnDelay = 2.5f;
@@ -38,31 +38,14 @@ public class OtherDarkSpawner : MonoBehaviour
     // The most recent spawn time
     private float lastSpawnTime = Mathf.NegativeInfinity;
 
-    [Tooltip("The object to make projectiles child objects of.")]
-    public Transform projectileHolder = null;
+    [Tooltip("The object to make OtherDarks child objects of.")]
+    public Transform OtherDarkHolder = null;
 
-    /// <summary>
-    /// Description:
-    /// Standard Unity function called every frame
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// void (no return)
-    /// </summary>
     private void Update()
     {
         CheckSpawnTimer();
     }
 
-    /// <summary>
-    /// Description:
-    /// Checks if it is time to spawn an OtherDark
-    /// Spawns an OtherDark if it is time
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// void (no return)
-    /// </summary>
     private void CheckSpawnTimer()
     {
         // If it is time for an OtherDark to be spawned
@@ -77,12 +60,9 @@ public class OtherDarkSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
     /// Spawn and set up an instance of the OtherDark prefab
-    /// Inputs: 
-    /// Vector3 spawnLocation
-    /// Returns: 
-    /// void (no return)
+    /// Inputs: Vector3 spawnLocation
+    /// Returns: void (no return)
     /// </summary>
     /// <param name="spawnLocation">The location to spawn an enmy at</param>
     private void SpawnOtherDark(Vector3 spawnLocation)
@@ -97,9 +77,14 @@ public class OtherDarkSpawner : MonoBehaviour
             // Setup the OtherDark if necessary
             if (OtherDark != null)
             {
-                OtherDark.followTarget = target;
+                OtherDark.avoidTarget = target;
             }
-  
+
+            if (OtherDarkHolder != null)
+            {
+                OtherDarkGameObject.transform.SetParent(OtherDarkHolder);
+            }
+
 
             // Incremment the spawn count
             currentlySpawned++;
@@ -108,12 +93,8 @@ public class OtherDarkSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Description:
     /// Returns a generated spawn location for an OtherDark
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// Vector3
+    /// Inputs: none
     /// </summary>
     /// <returns>Vector3: The spawn location as determined by the function</returns>
     protected virtual Vector3 GetSpawnLocation()
