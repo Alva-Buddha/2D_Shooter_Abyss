@@ -25,7 +25,14 @@ public class OtherDark : MonoBehaviour
     [Tooltip("The radius to detect neighboring boids.")]
     public float neighborRadius = 10.0f;
     [Tooltip("The radius to maintain distance from neighboring boids for separation.")]
-    public float avoidOtherRadius = 1.0f;
+    public float avoidOtherRadius = 2.0f;
+    [Tooltip("Weight for alignment movement")]
+    public float alignmentWeight = 1.0f;
+    [Tooltip("Weight for separation movement")]
+    public float seperationWeight = 1.0f;
+    [Tooltip("Weight for cohesion movement")]
+    public float cohesionWeight = 1.0f;
+
 
     private List<Transform> neighbors;
     public LayerMask neighborLayerMask; // Define which layer boids are on for neighbor detection
@@ -50,6 +57,14 @@ public class OtherDark : MonoBehaviour
     {
         neighbors = new List<Transform>();
         nextUpdateTime = Time.time + updateInterval;
+    }
+
+    /// <summary>
+    /// Default update method
+    /// </summary>
+    private void Update()
+    {
+        
     }
 
     /// <summary>
@@ -93,7 +108,7 @@ public class OtherDark : MonoBehaviour
         Vector3 separation = Separation();
 
         // Combine the behaviors with possibly different weights
-        Vector3 moveDirection = alignment + cohesion + separation;
+        Vector3 moveDirection = (alignment*alignmentWeight) + (cohesion*cohesionWeight) + (separation*seperationWeight);
         Vector3 movement = moveDirection * Time.deltaTime * moveSpeed; 
         transform.position += movement;
         RotateTowardsMovement(movement);
