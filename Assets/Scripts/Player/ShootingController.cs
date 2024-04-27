@@ -26,6 +26,9 @@ public class ShootingController : MonoBehaviour
         " shooting controller is facing and the direction projectiles are launched.")]
     public float projectileSpread = 1.0f;
 
+    [Tooltip("Distance from object for launch of projectile")]
+    public float projectileDistance = 1.0f;
+
     // The last time this component was fired
     private float lastFired = Mathf.NegativeInfinity;
 
@@ -145,7 +148,7 @@ public class ShootingController : MonoBehaviour
         if (projectilePrefab != null)
         {
             // Create the projectile
-            GameObject projectileGameObject = Instantiate(projectilePrefab, transform.position, transform.rotation, null);
+            GameObject projectileGameObject = Instantiate(projectilePrefab, transform.position + transform.up*projectileDistance, transform.rotation, null);
 
             // Account for spread
             Vector3 rotationEulerAngles = projectileGameObject.transform.rotation.eulerAngles;

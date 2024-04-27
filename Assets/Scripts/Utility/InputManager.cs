@@ -66,7 +66,7 @@ public class InputManager : MonoBehaviour
         Vector2 inputVector = context.ReadValue<Vector2>();
         horizontalMoveAxis = inputVector.x;
         verticalMoveAxis = inputVector.y;
-        Debug.Log("ReadMovementInput called with movement x:" + horizontalMoveAxis + " y:" + verticalMoveAxis);
+        //Debug.Log("ReadMovementInput called with movement x:" + horizontalMoveAxis + " y:" + verticalMoveAxis);
     }
 
     [Header("Look Around input")]
@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour
             horizontalLookAxis = inputVector.x;
             verticalLookAxis = inputVector.y;
         }
-        Debug.Log("ReadMousePositionInput Called with x:"+ horizontalLookAxis + " y:" + verticalLookAxis);
+        //Debug.Log("ReadMousePositionInput Called with x:"+ horizontalLookAxis + " y:" + verticalLookAxis);
     }
 
     [Header("Player Fire Input")]
