@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// A class which controls OtherDark behaviour
@@ -8,15 +10,22 @@ using UnityEngine;
 public class OtherDark : MonoBehaviour
 {
     [Header("Settings")]
-    [Tooltip("The speed at which the OtherDark moves.")]
-    public float moveSpeed = 5.0f;
+    [Tooltip("The min speed at which the OtherDark turns")]
+    public float degreeMax = 30.0f;
+    [Tooltip("The max speed at which the OtherDark moves.")]
+    public float moveSpeedMax = 6.0f;
     [Tooltip("The score value for defeating this OtherDark")]
     public int scoreValue = 5;
+    [Tooltip("Weight for velocity inertia commponent")]
+    public float inertiaFactor = 0.5f;
+    [Tooltip("Weight for random velocity commponent")]
+    public float randomFactor = 0f;
+
 
     [Header("Avoiding Settings")]
-    [Tooltip("The transform of the object that this OtherDark should Avoid.")]
+    [Tooltip("The transform of the object that this OtherDark should avoid.")]
     public Transform avoidTarget = null;
-    [Tooltip("The distance at which the OtherDark begins Avoiding the Avoid target.")]
+    [Tooltip("The target distance OtherDark seek to maintain from the avoidTarget")]
     public float avoidTargetRange = 5.0f;
 
     [Header("Flocking Settings")]
@@ -36,7 +45,7 @@ public class OtherDark : MonoBehaviour
 
     private List<Transform> neighbors;
     public LayerMask neighborLayerMask; // Define which layer boids are on for neighbor detection
-    private float updateInterval = 0.1f; // How often to update neighbors list in seconds
+    public float neighborUpdateInterval = 0.2f; // How often to update neighbors list in seconds
     private float nextUpdateTime = 0;
 
     /// <summary>
@@ -56,7 +65,7 @@ public class OtherDark : MonoBehaviour
     private void Start()
     {
         neighbors = new List<Transform>();
-        nextUpdateTime = Time.time + updateInterval;
+        nextUpdateTime = Time.time + neighborUpdateInterval;
     }
 
     /// <summary>
@@ -64,7 +73,9 @@ public class OtherDark : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        
+        // Draw the global forward direction from the object's position
+        //Vector3 globalForward = transform.TransformDirection(Vector3.forward) * 5; 
+        //Debug.DrawLine(transform.position, transform.position + globalForward, Color.blue);
     }
 
     /// <summary>
@@ -72,34 +83,46 @@ public class OtherDark : MonoBehaviour
     /// </summary>
     private void LateUpdate()
     {
-        HandleBehaviour();
+        MoveBehaviour();
     }
 
     /// <summary>
     /// Handles moving in accordance with the OtherDark's set behaviour
     /// </summary>
-    private void HandleBehaviour()
+    private void MoveBehaviour()
     {
+        Vector3 moveDirection = Vector3.zero;
+        
         // Check if the target is in range, then move
-        if (avoidTarget != null && (avoidTarget.position - transform.position).magnitude < avoidTargetRange)
+        if (avoidTarget != null)
         {
-            avoidTargetMove();
+            moveDirection += GetAvoidTargetVector();
+            //Debug.Log("Avoid Target x:" + moveDirection.x + " and y:" + moveDirection.y);
         }
+        Vector3 flockVectorlocal = Vector3.zero;
         if (useFlocking)
         {
             if (Time.time > nextUpdateTime)
             {
                 UpdateNeighbors();
-                nextUpdateTime = Time.time + updateInterval;
+                nextUpdateTime = Time.time + neighborUpdateInterval;
+                flockVectorlocal = GetFlockVector();
             }
-            Flock();
+            moveDirection += flockVectorlocal;
+            //Debug.Log("Avoid Target + Flock x:" + moveDirection.x + " and y:" + moveDirection.y);
         }
+        moveDirection += ((inertiaFactor * this.transform.forward)+RandomMove());
+        //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
+        Vector3 movement = (moveSpeedMax * Time.deltaTime * moveDirection.normalized);
+        movement.z = 0;
+        transform.position += movement;
+        RotateTowardsMovement(movement, degreeMax);
     }
 
     /// <summary>
     /// Combines the flocking behaviors to determine the enemy's next move.
     /// </summary>
-    private void Flock()
+    private Vector3 GetFlockVector()
     {
         CleanUpNeighbors();
         
@@ -108,10 +131,8 @@ public class OtherDark : MonoBehaviour
         Vector3 separation = Separation();
 
         // Combine the behaviors with possibly different weights
-        Vector3 moveDirection = (alignment*alignmentWeight) + (cohesion*cohesionWeight) + (separation*seperationWeight);
-        Vector3 movement = moveDirection * Time.deltaTime * moveSpeed; 
-        transform.position += movement;
-        RotateTowardsMovement(movement);
+        Vector3 flockVector = (alignment * alignmentWeight) + (cohesion * cohesionWeight) + (separation * seperationWeight);
+        return flockVector;
     }
 
     /// <summary>
@@ -125,9 +146,11 @@ public class OtherDark : MonoBehaviour
         {
             alignVector += neighbor.forward;  // Assuming forward is the moving direction
         }
-        alignVector /= neighbors.Count;
-
-        return alignVector.normalized;
+        if (neighbors.Count > 0)
+        {
+            alignVector /= neighbors.Count;
+        }
+        return alignVector;
     }
 
     /// <summary>
@@ -141,10 +164,12 @@ public class OtherDark : MonoBehaviour
         {
             cohesionVector += neighbor.position;
         }
-        cohesionVector /= neighbors.Count;
-        cohesionVector -= transform.position;
-
-        return cohesionVector.normalized;
+        if (neighbors.Count > 0)
+        {
+            cohesionVector /= neighbors.Count;
+            cohesionVector -= transform.position;
+        }
+        return cohesionVector;
     }
 
     /// <summary>
@@ -156,13 +181,14 @@ public class OtherDark : MonoBehaviour
         Vector3 separationVector = Vector3.zero;
         foreach (Transform neighbor in neighbors)
         {
-            if ((neighbor.position - transform.position).magnitude < avoidOtherRadius)
+            float proximity = (neighbor.position - transform.position).magnitude;
+            if (proximity < avoidOtherRadius)
             {
-                separationVector -= (neighbor.position - transform.position);
+                separationVector -= (neighbor.position - transform.position)/Mathf.Max(proximity*proximity,0.0001f);
             }
         }
 
-        return separationVector.normalized;
+        return separationVector;
     }
 
     /// <summary>
@@ -225,38 +251,34 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves the OtherDark
-    /// </summary>
-    private void avoidTargetMove()
-    {
-        // Determine correct movement
-        Vector3 movement = GetAvoidTargetMovement();
-
-        // Move the OtherDark
-        transform.position = transform.position + movement;
-    }
-
-    /// <summary>
     /// The direction and magnitude of the OtherDark's desired movement in Avoid mode
     /// </summary>
     /// <returns>Vector3: The movement to be used in Avoid movement mode.</returns>
-    private Vector3 GetAvoidTargetMovement()
+    private Vector3 GetAvoidTargetVector()
     {
-        Vector3 moveDirection = -(avoidTarget.position - transform.position).normalized;
-        Vector3 movement = moveDirection * moveSpeed * Time.deltaTime;
-        RotateTowardsMovement(movement);
-        return movement;
+        float avoidScale = ((avoidTarget.position - transform.position).magnitude - avoidTargetRange);
+        avoidScale /= Mathf.Max(Mathf.Abs(avoidScale),1);
+        Vector3 avoidVector = (avoidTarget.position - transform.position).normalized * avoidScale;
+        return avoidVector;
     }
 
     /// <summary>
     /// Rotates the OtherDark to instantly face the direction it is moving.
     /// </summary>
     /// <param name="moveDirection">The direction of movement.</param>
-    private void RotateTowardsMovement(Vector3 moveDirection)
+    private void RotateTowardsMovement(Vector3 moveDirectionR, float degreeMax)
     {
-        if (moveDirection != Vector3.zero) // Prevent rotation towards zero vector
-        {
-            transform.rotation = Quaternion.LookRotation(moveDirection);
+        if (moveDirectionR != Vector3.zero) // Prevent rotation towards zero vector
+        { 
+            Quaternion currentRotation = transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirectionR);
+            transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, degreeMax * Time.deltaTime);
         }
+    }
+
+    private Vector3 RandomMove()
+    {
+        Vector3 randomVector = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized;
+        return randomFactor * randomVector;
     }
 }

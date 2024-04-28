@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6685e33c52fbb6f43ac633e35efe45c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 2
+  projectileSpeed: 5
 --- !u!114 &5310315416738219893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +153,6 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   destroyAfterDamage: 1
   DamageOnTrigEnter: 1
-  DamageOnTrigStay: 1
   dealDamageOnCollision: 1
 --- !u!54 &-1250357219202886102
 Rigidbody:

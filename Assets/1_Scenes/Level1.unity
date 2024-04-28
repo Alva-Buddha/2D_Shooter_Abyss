@@ -211,13 +211,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OtherDarkPrefab: {fileID: 1507548708794196490, guid: b0fbe3fb00a06e9429141c12d4cfc1bb, type: 3}
   target: {fileID: 940998321}
-  spawnRangeXmax: 5
-  spawnRangeXmin: 2
-  spawnRangeYmax: 5
-  spawnRangeYmin: 2
-  maxSpawn: 10
+  spawnRangeXmax: 20
+  spawnRangeXmin: 10
+  spawnRangeYmax: 20
+  spawnRangeYmin: 10
+  maxSpawn: 200
   spawnInfinite: 0
-  spawnDelay: 2.5
+  currentlySpawned: 0
+  spawnDelay: 0.1
   OtherDarkHolder: {fileID: 1777334504}
 --- !u!4 &515075864
 Transform:
@@ -371,7 +372,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 621897312726652600, guid: af1d9a68229856c48b2ed115c943afd6, type: 3}
   projectileHolder: {fileID: 1283165298}
   isPlayerControlled: 1
-  fireRate: 0.1
+  fireRate: 0.05
   projectileSpread: 20
   projectileDistance: -1
   fireEffect: {fileID: 0}

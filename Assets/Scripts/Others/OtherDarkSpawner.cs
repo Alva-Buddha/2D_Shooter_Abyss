@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// A class which spawns enemies in an area around it.
@@ -70,8 +71,10 @@ public class OtherDarkSpawner : MonoBehaviour
         // Make sure the prefab is valid
         if (OtherDarkPrefab != null)
         {
+            Vector3 lookatorigin = -spawnLocation;
+
             // Create the OtherDark gameobject
-            GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, OtherDarkPrefab.transform.rotation, null);
+            GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, Quaternion.LookRotation(lookatorigin), null);
             OtherDark OtherDark = OtherDarkGameObject.GetComponent<OtherDark>();
 
             // Setup the OtherDark if necessary
