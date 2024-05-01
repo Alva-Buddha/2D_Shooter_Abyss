@@ -75,13 +75,6 @@ public class OtherDarkSpawner : MonoBehaviour
 
             // Create the OtherDark gameobject
             GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, Quaternion.LookRotation(lookatorigin), null);
-            OtherDark OtherDark = OtherDarkGameObject.GetComponent<OtherDark>();
-
-            // Setup the OtherDark if necessary
-            if (OtherDark != null)
-            {
-                OtherDark.avoidTarget = target;
-            }
 
             if (OtherDarkHolder != null)
             {

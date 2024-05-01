@@ -12,10 +12,12 @@ GameObject:
   - component: {fileID: 5388300659635514118}
   - component: {fileID: 5559803755855070674}
   - component: {fileID: 7069966426567712159}
-  - component: {fileID: 4289572251580787915}
   - component: {fileID: 6576217429357586810}
   - component: {fileID: 7433137335790068979}
+  - component: {fileID: 8945098723695511029}
+  - component: {fileID: -4124965789337707065}
   - component: {fileID: -2608216965893146636}
+  - component: {fileID: 7829846900672069502}
   m_Layer: 3
   m_Name: OtherDark
   m_TagString: Untagged
@@ -109,37 +111,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4289572251580787915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1507548708794196490}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8cd536fdf4575e43ac8837bb40a66d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  degreeMax: 90
-  moveSpeedBase: 6
-  scoreValue: 5
-  inertiaFactor: 1
-  randomFactor: 0.1
-  convertPrefab: {fileID: 5943312051007336022, guid: 595651d741963b9458ba5d774f5bdd83, type: 3}
-  avoidTarget: {fileID: 0}
-  avoidTargetRange: 12
-  useFlocking: 1
-  neighborRadius: 3
-  avoidOtherRadius: 2
-  alignmentWeight: 2
-  seperationWeight: 1
-  cohesionWeight: 0.5
-  neighborLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  neighborUpdateInterval: 0.1
-  movementMode: 1
 --- !u!114 &6576217429357586810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +150,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -190,6 +161,38 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &8945098723695511029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507548708794196490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b790311f69d10544fb53ef52296c714d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avoidLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  avoidRadius: 7
+  avoidAngle: 90
+  avoidWeight: 20
+--- !u!114 &-4124965789337707065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507548708794196490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc26b6810860d384f8a3ba2273796309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freeRadius: 15
+  bounceWeight: 10
 --- !u!114 &-2608216965893146636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,3 +205,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deb537d33d22cab4ba5d75f211917e21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  neighborRadius: 3
+  avoidOtherRadius: 2
+  alignmentWeight: 2
+  separationWeight: 1
+  cohesionWeight: 0.5
+  neighborLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  UpdateInterval: 0.2
+--- !u!114 &7829846900672069502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507548708794196490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8cd536fdf4575e43ac8837bb40a66d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  degreeMax: 90
+  moveSpeedBase: 6
+  scoreValue: 5
+  inertiaFactor: 1
+  randomFactor: 0.1
+  convertPrefab: {fileID: 5943312051007336022, guid: 595651d741963b9458ba5d774f5bdd83, type: 3}
+  useAvoidance: 1
+  useFlocking: 1
+  useSpaceLimits: 1
