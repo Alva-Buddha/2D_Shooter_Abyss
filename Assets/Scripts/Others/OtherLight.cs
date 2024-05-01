@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// A class which controls OtherDark behaviour
 /// </summary>
-public class OtherDark : MonoBehaviour
+public class OtherLight : MonoBehaviour
 {
-    private Flocking Flocking;
-
     [Header("Settings")]
     [Tooltip("The min speed at which the OtherDark turns")]
     public float degreeMax = 90.0f;
@@ -27,7 +29,7 @@ public class OtherDark : MonoBehaviour
     [Tooltip("The transform of the object that this OtherDark should avoid.")]
     public Transform avoidTarget = null;
     [Tooltip("The target distance OtherDark seek to maintain from the avoidTarget")]
-    public float avoidTargetRange = 12.0f;
+    public float avoidTargetRange = 3.0f;
 
     [Header("Flocking Settings")]
     [Tooltip("Enable or disable flocking behavior.")]
@@ -39,7 +41,7 @@ public class OtherDark : MonoBehaviour
     [Tooltip("Weight for alignment movement")]
     public float alignmentWeight = 2.0f;
     [Tooltip("Weight for separation movement")]
-    public float separationWeight = 1.0f;
+    public float seperationWeight = 1.0f;
     [Tooltip("Weight for cohesion movement")]
     public float cohesionWeight = 0.5f;
 
@@ -67,7 +69,6 @@ public class OtherDark : MonoBehaviour
     private void Start()
     {
         neighbors = new List<Transform>();
-        Flocking = GetComponent<Flocking>();
         nextUpdateTime = Time.time + neighborUpdateInterval;
     }
 
@@ -95,7 +96,7 @@ public class OtherDark : MonoBehaviour
     private void MoveBehaviour()
     {
         Vector3 moveDirection = Vector3.zero;
-
+        
         // Check if the target is in range, then move
         if (avoidTarget != null)
         {
@@ -106,15 +107,14 @@ public class OtherDark : MonoBehaviour
         {
             if (Time.time > nextUpdateTime)
             {
-                neighbors = Flocking.UpdateNeighbors(neighborRadius, neighborLayerMask);
+                UpdateNeighbors();
                 nextUpdateTime = Time.time + neighborUpdateInterval;
-                flockVectorLocal = Flocking.GetFlockVector(alignmentWeight, separationWeight, cohesionWeight, avoidOtherRadius,
-                    neighbors);
+                flockVectorLocal = GetFlockVector();
             }
             moveDirection += flockVectorLocal;
         }
         //Debug.Log("Flock x:" + flockVectorlocaL.x + " and y:" + moveDirection.y);
-        moveDirection += ((inertiaFactor * this.transform.forward) + RandomMove());
+        moveDirection += ((inertiaFactor * this.transform.forward)+RandomMove());
         //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
         Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized);
         movement.z = 0;
@@ -123,17 +123,114 @@ public class OtherDark : MonoBehaviour
     }
 
     /// <summary>
+    /// Combines the flocking behaviors to determine the enemy's next move.
+    /// </summary>
+    private Vector3 GetFlockVector()
+    {
+        CleanUpNeighbors();
+        
+        Vector3 alignment = Alignment();
+        Vector3 cohesion = Cohesion();
+        Vector3 separation = Separation();
+
+        // Combine the behaviors with possibly different weights
+        Vector3 flockVector = (alignment * alignmentWeight) + (cohesion * cohesionWeight) + (separation * seperationWeight);
+        return flockVector;
+    }
+
+    /// <summary>
+    /// Calculates the average direction of nearby boids for alignment.
+    /// </summary>
+    /// <returns>Vector3 representing the average heading of nearby boids.</returns>
+    private Vector3 Alignment()
+    {
+        Vector3 alignVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            alignVector += neighbor.forward;  // Assuming forward is the moving direction
+        }
+        if (neighbors.Count > 0)
+        {
+            alignVector /= neighbors.Count;
+        }
+        return alignVector;
+    }
+
+    /// <summary>
+    /// Calculates the center of mass of nearby boids for cohesion.
+    /// </summary>
+    /// <returns>Vector3 pointing towards the center of mass.</returns>
+    private Vector3 Cohesion()
+    {
+        Vector3 cohesionVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            cohesionVector += neighbor.position;
+        }
+        if (neighbors.Count > 0)
+        {
+            cohesionVector /= neighbors.Count;
+            cohesionVector -= transform.position;
+        }
+        return cohesionVector;
+    }
+
+    /// <summary>
+    /// Calculates a vector to keep distance from nearby boids for separation.
+    /// </summary>
+    /// <returns>Vector3 to move away from nearby boids.</returns>
+    private Vector3 Separation()
+    {
+        Vector3 separationVector = Vector3.zero;
+        foreach (Transform neighbor in neighbors)
+        {
+            float proximity = (neighbor.position - transform.position).magnitude;
+            if (proximity < avoidOtherRadius)
+            {
+                separationVector -= (neighbor.position - transform.position)/Mathf.Max(proximity*proximity,0.0001f);
+            }
+        }
+
+        return separationVector;
+    }
+
+    /// <summary>
+    /// Updates the list of nearby boids to be considered for flocking.
+    /// </summary>
+    private void UpdateNeighbors()
+    {
+        neighbors.Clear(); // Clear the existing list
+        Collider[] colliders = Physics.OverlapSphere(transform.position, neighborRadius, neighborLayerMask);
+        //Debug.Log("neighbor count:" + colliders.Length);
+        foreach (Collider collider in colliders)
+        {
+            if (collider.transform != transform) // Avoid adding self
+            {
+                neighbors.Add(collider.transform);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Clears any null or destroyed objects from the neighbors list.
+    /// </summary>
+    private void CleanUpNeighbors()
+    {
+        neighbors.RemoveAll(item => item == null || item.gameObject == null);
+    }
+
+
+    /// <summary>
     /// This is meant to be called before destroying the gameobject associated with this script
     /// It can not be replaced with OnDestroy() because of Unity's inability to distiguish between unloading a scene
     /// and destroying the gameobject from the Destroy function
     /// </summary>
     public void DoBeforeDestroy()
     {
-        Debug.Log("instantiating otherlight");
-        GameObject OtherLightObject = Instantiate(convertPrefab, this.transform.position, this.transform.rotation, null);
-        OtherLightObject.transform.SetParent(this.transform.parent, true);
-        OtherLight OtherLight = OtherLightObject.GetComponent<OtherLight>();
-        OtherLight.avoidTarget = avoidTarget;
+        //Debug.Log("instantiating otherlight");
+        //GameObject OtherLightObject = Instantiate(convertPrefab, this.transform.position, this.transform.rotation, null);
+        //OtherLightObject.transform.SetParent(this.transform.parent, true);
+        //OtherLightObject.OtherDark.avoidTarget = avoidTarget;
         AddToScore();
         IncrementEnemiesDefeated();
         //Debug.Log("OtherDark being destroyed");
@@ -170,7 +267,7 @@ public class OtherDark : MonoBehaviour
         float avoidScale = ((avoidTarget.position - transform.position).magnitude - avoidTargetRange);
         if (avoidScale > 0)
         {
-            avoidScale = 1.0f;
+            avoidScale = 0.1f;
         }
         Vector3 avoidVector = (avoidTarget.position - transform.position).normalized * avoidScale;
         return avoidVector;
@@ -183,7 +280,7 @@ public class OtherDark : MonoBehaviour
     private void RotateTowardsMovement(Vector3 moveDirectionR, float degreeMax)
     {
         if (moveDirectionR != Vector3.zero) // Prevent rotation towards zero vector
-        {
+        { 
             Quaternion currentRotation = transform.rotation;
             Quaternion targetRotation = Quaternion.LookRotation(moveDirectionR);
             transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, degreeMax * Time.deltaTime);

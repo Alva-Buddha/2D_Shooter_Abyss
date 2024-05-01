@@ -215,7 +215,7 @@ MonoBehaviour:
   spawnRangeXmin: 10
   spawnRangeYmax: 20
   spawnRangeYmin: 10
-  maxSpawn: 200
+  maxSpawn: 100
   spawnInfinite: 0
   currentlySpawned: 0
   spawnDelay: 0.1
@@ -406,7 +406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamId: 0
-  damageAmount: 1
+  damageAmount: 0
   hitEffect: {fileID: 0}
   destroyAfterDamage: 0
   DamageOnTrigEnter: 1
