@@ -121,7 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6685e33c52fbb6f43ac633e35efe45c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 5
+  projectileSpeed: 10
+  ScaleFactor: 0.6
 --- !u!114 &5310315416738219893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f114f8130323d704892ffdf3b1837630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 5
+  lifetime: 3
   destroyChildrenOnDeath: 1
 --- !u!114 &-4448743237580334598
 MonoBehaviour:

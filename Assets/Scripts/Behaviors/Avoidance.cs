@@ -17,13 +17,13 @@ public class Avoidance : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public Vector3 GetAvoidanceVector()
@@ -40,16 +40,21 @@ public class Avoidance : MonoBehaviour
                 // More weight is given to objects closer to this object
                 float weight = Mathf.Clamp01((avoidRadius - distance) / avoidRadius) * avoidWeight;
 
-                // Rotate the direction to target by avoidance angle to either left or right
-                Vector3 rotatedDirection = Quaternion.Euler(0, 0, avoidAngle*Random.Range(-1f, 1f)) * directionToTarget;
-                Debug.DrawRay(transform.position, rotatedDirection, Color.yellow);
-                Debug.DrawRay(transform.position, directionToTarget, Color.blue);
+                //Debug.DrawRay(transform.position, directionToTarget, Color.blue);
 
                 // Add to the avoidance vector, inversely proportional to the distance
-                avoidanceVector += rotatedDirection.normalized * weight;
+                avoidanceVector += directionToTarget.normalized * weight;
             }
         }
 
         return avoidanceVector;
+    }
+
+    public Vector3 GetAngleAvoidanceVector(Vector3 avoidanceVectorLocal)
+    {
+        // Rotate the direction to target by avoidance angle to either left or right
+        Vector3 angleAvoidanceVector = Quaternion.Euler(0, 0, avoidAngle * Random.Range(-1f, 1f)) * avoidanceVectorLocal;
+        //Debug.DrawRay(transform.position, rotatedDirection, Color.yellow);
+        return angleAvoidanceVector;
     }
 }

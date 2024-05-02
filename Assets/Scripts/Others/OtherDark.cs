@@ -68,11 +68,13 @@ public class OtherDark : MonoBehaviour
     {
         Vector3 moveDirection = Vector3.zero;
         Vector3 avoidDirection = Vector3.zero;
+        Vector3 angleAvoidDirection = Vector3.zero;
 
         // Check if the target is in range, then move
         if (useAvoidance && Avoidance != null)
         {
             avoidDirection += Avoidance.GetAvoidanceVector();
+            angleAvoidDirection += Avoidance.GetAngleAvoidanceVector(avoidDirection);
             //Debug.Log("Avoid Target x:" + moveDirection.x + " and y:" + moveDirection.y);
         }
         if (useSpaceLimits && SpaceLimits != null)
@@ -86,7 +88,8 @@ public class OtherDark : MonoBehaviour
         moveDirection += ((inertiaFactor * this.transform.forward) + RandomMove());
         //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
         Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized)
-            + (moveSpeedBase * Time.deltaTime * avoidDirection.normalized);
+            + (moveSpeedBase * Time.deltaTime * avoidDirection.normalized)
+            + (moveSpeedBase * Time.deltaTime * angleAvoidDirection.normalized);
         movement.z = 0;
         transform.position += movement;
         RotateTowardsMovement(movement, degreeMax);

@@ -10,6 +10,10 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class OtherLight : MonoBehaviour
 {
+    private Flocking Flocking;
+    private Avoidance Avoidance;
+    private SpaceLimits SpaceLimits;
+
     [Header("Settings")]
     [Tooltip("The min speed at which the OtherDark turns")]
     public float degreeMax = 90.0f;
@@ -25,51 +29,22 @@ public class OtherLight : MonoBehaviour
     public GameObject convertPrefab = null;
 
 
-    [Header("Avoiding Settings")]
-    [Tooltip("The transform of the object that this OtherDark should avoid.")]
-    public Transform avoidTarget = null;
-    [Tooltip("The target distance OtherDark seek to maintain from the avoidTarget")]
-    public float avoidTargetRange = 3.0f;
-
-    [Header("Flocking Settings")]
+    [Header("Behavior Settings")]
+    [Tooltip("Enable or disable avoidance behavior.")]
+    public bool useAvoidance = true;
     [Tooltip("Enable or disable flocking behavior.")]
     public bool useFlocking = true;
-    [Tooltip("The radius to detect neighboring boids.")]
-    public float neighborRadius = 3.0f;
-    [Tooltip("The radius to maintain distance from neighboring boids for separation.")]
-    public float avoidOtherRadius = 2.0f;
-    [Tooltip("Weight for alignment movement")]
-    public float alignmentWeight = 2.0f;
-    [Tooltip("Weight for separation movement")]
-    public float seperationWeight = 1.0f;
-    [Tooltip("Weight for cohesion movement")]
-    public float cohesionWeight = 0.5f;
-
-
-    private List<Transform> neighbors;
-    public LayerMask neighborLayerMask; // Define which layer boids are on for neighbor detection
-    public float neighborUpdateInterval = 0.2f; // How often to update neighbors list in seconds
-    private float nextUpdateTime = 0.1f;
-    private Vector3 flockVectorLocal = Vector3.zero;
-
-    /// <summary>
-    /// Enum to help wih different movement modes
-    /// </summary>
-    public enum MovementModes { NoMovement, avoidTarget };
-
-    [Tooltip("The way this OtherDark will move\n" +
-        "NoMovement: This OtherDark will not move.\n" +
-        "avoidTarget: This OtherDark will Avoid the assigned target.\n" +
-        "Scroll: This OtherDark will move in one horizontal direction only.")]
-    public MovementModes movementMode = MovementModes.avoidTarget;
+    [Tooltip("Enable or disable space limits to redirect object")]
+    public bool useSpaceLimits = true;
 
     /// <summary>
     /// Standard Unity function called once before the first call to Update
     /// </summary>
     private void Start()
     {
-        neighbors = new List<Transform>();
-        nextUpdateTime = Time.time + neighborUpdateInterval;
+        Flocking = GetComponent<Flocking>();
+        Avoidance = GetComponent<Avoidance>();
+        SpaceLimits = GetComponent<SpaceLimits>();
     }
 
     /// <summary>
@@ -96,129 +71,33 @@ public class OtherLight : MonoBehaviour
     private void MoveBehaviour()
     {
         Vector3 moveDirection = Vector3.zero;
-        
+        Vector3 avoidDirection = Vector3.zero;
+        Vector3 angleAvoidDirection = Vector3.zero;
+
         // Check if the target is in range, then move
-        if (avoidTarget != null)
+        if (useAvoidance && Avoidance != null)
         {
-            moveDirection += GetAvoidTargetVector();
+            avoidDirection += Avoidance.GetAvoidanceVector();
+            angleAvoidDirection += Avoidance.GetAngleAvoidanceVector(avoidDirection);
             //Debug.Log("Avoid Target x:" + moveDirection.x + " and y:" + moveDirection.y);
         }
-        if (useFlocking)
+        if (useSpaceLimits && SpaceLimits != null)
         {
-            if (Time.time > nextUpdateTime)
-            {
-                UpdateNeighbors();
-                nextUpdateTime = Time.time + neighborUpdateInterval;
-                flockVectorLocal = GetFlockVector();
-            }
-            moveDirection += flockVectorLocal;
+            moveDirection += SpaceLimits.GetBounceVector();
         }
-        //Debug.Log("Flock x:" + flockVectorlocaL.x + " and y:" + moveDirection.y);
-        moveDirection += ((inertiaFactor * this.transform.forward)+RandomMove());
+        if (useFlocking && Flocking != null)
+        {
+            moveDirection += Flocking.GetFlockVector();
+        }
+        moveDirection += ((inertiaFactor * this.transform.forward) + RandomMove());
         //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
-        Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized);
+        Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized)
+            + (moveSpeedBase * Time.deltaTime * avoidDirection.normalized)
+            + (moveSpeedBase * Time.deltaTime * angleAvoidDirection.normalized);
         movement.z = 0;
         transform.position += movement;
         RotateTowardsMovement(movement, degreeMax);
     }
-
-    /// <summary>
-    /// Combines the flocking behaviors to determine the enemy's next move.
-    /// </summary>
-    private Vector3 GetFlockVector()
-    {
-        CleanUpNeighbors();
-        
-        Vector3 alignment = Alignment();
-        Vector3 cohesion = Cohesion();
-        Vector3 separation = Separation();
-
-        // Combine the behaviors with possibly different weights
-        Vector3 flockVector = (alignment * alignmentWeight) + (cohesion * cohesionWeight) + (separation * seperationWeight);
-        return flockVector;
-    }
-
-    /// <summary>
-    /// Calculates the average direction of nearby boids for alignment.
-    /// </summary>
-    /// <returns>Vector3 representing the average heading of nearby boids.</returns>
-    private Vector3 Alignment()
-    {
-        Vector3 alignVector = Vector3.zero;
-        foreach (Transform neighbor in neighbors)
-        {
-            alignVector += neighbor.forward;  // Assuming forward is the moving direction
-        }
-        if (neighbors.Count > 0)
-        {
-            alignVector /= neighbors.Count;
-        }
-        return alignVector;
-    }
-
-    /// <summary>
-    /// Calculates the center of mass of nearby boids for cohesion.
-    /// </summary>
-    /// <returns>Vector3 pointing towards the center of mass.</returns>
-    private Vector3 Cohesion()
-    {
-        Vector3 cohesionVector = Vector3.zero;
-        foreach (Transform neighbor in neighbors)
-        {
-            cohesionVector += neighbor.position;
-        }
-        if (neighbors.Count > 0)
-        {
-            cohesionVector /= neighbors.Count;
-            cohesionVector -= transform.position;
-        }
-        return cohesionVector;
-    }
-
-    /// <summary>
-    /// Calculates a vector to keep distance from nearby boids for separation.
-    /// </summary>
-    /// <returns>Vector3 to move away from nearby boids.</returns>
-    private Vector3 Separation()
-    {
-        Vector3 separationVector = Vector3.zero;
-        foreach (Transform neighbor in neighbors)
-        {
-            float proximity = (neighbor.position - transform.position).magnitude;
-            if (proximity < avoidOtherRadius)
-            {
-                separationVector -= (neighbor.position - transform.position)/Mathf.Max(proximity*proximity,0.0001f);
-            }
-        }
-
-        return separationVector;
-    }
-
-    /// <summary>
-    /// Updates the list of nearby boids to be considered for flocking.
-    /// </summary>
-    private void UpdateNeighbors()
-    {
-        neighbors.Clear(); // Clear the existing list
-        Collider[] colliders = Physics.OverlapSphere(transform.position, neighborRadius, neighborLayerMask);
-        //Debug.Log("neighbor count:" + colliders.Length);
-        foreach (Collider collider in colliders)
-        {
-            if (collider.transform != transform) // Avoid adding self
-            {
-                neighbors.Add(collider.transform);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Clears any null or destroyed objects from the neighbors list.
-    /// </summary>
-    private void CleanUpNeighbors()
-    {
-        neighbors.RemoveAll(item => item == null || item.gameObject == null);
-    }
-
 
     /// <summary>
     /// This is meant to be called before destroying the gameobject associated with this script
@@ -262,16 +141,6 @@ public class OtherLight : MonoBehaviour
     /// The direction and magnitude of the OtherDark's desired movement in Avoid mode
     /// </summary>
     /// <returns>Vector3: The movement to be used in Avoid movement mode.</returns>
-    private Vector3 GetAvoidTargetVector()
-    {
-        float avoidScale = ((avoidTarget.position - transform.position).magnitude - avoidTargetRange);
-        if (avoidScale > 0)
-        {
-            avoidScale = 0.1f;
-        }
-        Vector3 avoidVector = (avoidTarget.position - transform.position).normalized * avoidScale;
-        return avoidVector;
-    }
 
     /// <summary>
     /// Rotates the OtherDark to instantly face the direction it is moving.

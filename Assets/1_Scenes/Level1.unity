@@ -215,7 +215,8 @@ MonoBehaviour:
   spawnRangeXmin: 10
   spawnRangeYmax: 20
   spawnRangeYmin: 10
-  maxSpawn: 100
+  angleRange: 120
+  maxSpawn: 50
   spawnInfinite: 0
   currentlySpawned: 0
   spawnDelay: 0.1
@@ -261,6 +262,7 @@ GameObject:
   - component: {fileID: 940998323}
   - component: {fileID: 940998322}
   - component: {fileID: 940998324}
+  - component: {fileID: 940998326}
   - component: {fileID: 940998325}
   m_Layer: 7
   m_Name: Player
@@ -389,7 +391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myRigidbody: {fileID: 0}
-  moveSpeed: 8
+  moveSpeed: 4
   rotationSpeed: 30
   aimMode: 0
   movementMode: 2
@@ -438,6 +440,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &940998326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940998316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c9a4613bbc6ce4b809b21678067793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamId: 0
+  defaultHealth: 300
+  maximumHealth: 300
+  currentHealth: 300
+  invincibilityTime: 0
+  isAlwaysInvincible: 0
+  useLives: 0
+  currentLives: 3
+  maximumLives: 5
+  deathEffect: {fileID: 0}
+  hitEffect: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

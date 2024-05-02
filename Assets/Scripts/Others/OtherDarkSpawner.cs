@@ -14,7 +14,7 @@ public class OtherDarkSpawner : MonoBehaviour
     [Tooltip("The target of the spwaned enemies")]
     public Transform target = null;
 
-    [Header("Spawn Position")]
+    [Header("Spawn Position & Orientation")]
     [Tooltip("The distance within which enemies can spawn in the X direction")]
     [Min(0)]
     public float spawnRangeXmax = 10.0f;
@@ -23,6 +23,8 @@ public class OtherDarkSpawner : MonoBehaviour
     [Min(0)]
     public float spawnRangeYmax = 10.0f;
     public float spawnRangeYmin = 5.0f;
+    [Tooltip("Random angle range of spawns (0 = all spawns orient towards player)")]
+    public float angleRange = 45.0f;
 
     [Header("Spawn Variables")]
     [Tooltip("The maximum number of enemies that can be spawned from this spawner")]
@@ -74,7 +76,11 @@ public class OtherDarkSpawner : MonoBehaviour
             Vector3 lookatorigin = -spawnLocation;
 
             // Create the OtherDark gameobject
-            GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, Quaternion.LookRotation(lookatorigin), null);
+            GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, 
+                Quaternion.LookRotation(lookatorigin)*
+                Quaternion.Euler(angleRange * Random.Range(-1f, 1f), 
+                angleRange * Random.Range(-1f, 1f), 
+                angleRange * Random.Range(-1f, 1f)), null);
 
             if (OtherDarkHolder != null)
             {
