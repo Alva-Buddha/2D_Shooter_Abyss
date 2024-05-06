@@ -147,6 +147,7 @@ public class UIManager : MonoBehaviour
             else
             {
                 GoToPage(pausePageIndex);
+                UpdateUI();
                 Time.timeScale = 0;
                 isPaused = true;
             }
@@ -271,5 +272,20 @@ public class UIManager : MonoBehaviour
                     page.gameObject.SetActive(activated);
             }
         }
+    }
+
+
+    public void ExitGame()
+    {
+        // Log a message to the console (useful for debugging)
+        Debug.Log("Exit button clicked. Quitting game...");
+
+        // Quits the game. Note: This will only work after building the game.
+        Application.Quit();
+
+        // If running in the Unity editor, stop playing the scene
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 }

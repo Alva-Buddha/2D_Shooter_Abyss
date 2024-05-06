@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 /// <summary>
 /// A class which controls OtherDark behaviour
@@ -9,6 +11,7 @@ public class OtherDark : MonoBehaviour
     private Flocking Flocking;
     private Avoidance Avoidance;
     private SpaceLimits SpaceLimits;
+    private Health HealthImpact;
 
     [Header("Settings")]
     [Tooltip("The min speed at which the OtherDark turns")]
@@ -32,6 +35,19 @@ public class OtherDark : MonoBehaviour
     public bool useFlocking = true;
     [Tooltip("Enable or disable space limits to redirect object")]
     public bool useSpaceLimits = true;
+
+    [Header("Damage Heal Settings")]
+    [Tooltip("Should damage to specific enemies heal?")]
+    public bool HealonDamage = true;
+    [Tooltip("Amount of damage to be healed")]
+    public float HealAmount = 5.0f;
+    [Tooltip("Player gameobject for healing")]
+    public GameObject PlayerObject = null;
+
+
+    [Header("Update settings")]
+    [Tooltip("Other bar")]
+    public Slider otherBar = null;
 
     /// <summary>
     /// Standard Unity function called once before the first call to Update
@@ -106,9 +122,17 @@ public class OtherDark : MonoBehaviour
         GameObject OtherLightObject = Instantiate(convertPrefab, this.transform.position, this.transform.rotation, null);
         OtherLightObject.transform.SetParent(this.transform.parent, true);
         OtherLight OtherLight = OtherLightObject.GetComponent<OtherLight>();
+        if (otherBar != null)
+        {
+            otherBar.value += 1;
+        }
         AddToScore();
         IncrementEnemiesDefeated();
         //Debug.Log("OtherDark being destroyed");
+        if (HealonDamage)
+        {
+            PlayerObject.GetComponent<Health>().ReceiveHealing(HealAmount);
+        }
     }
 
     /// <summary>

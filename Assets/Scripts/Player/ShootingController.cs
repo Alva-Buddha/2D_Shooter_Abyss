@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class ShootingController : MonoBehaviour
 {
+    private Health HealthImpact;
+
     [Header("GameObject/Component References")]
     [Tooltip("The projectile to be fired.")]
     public GameObject projectilePrefab = null;
@@ -35,17 +37,20 @@ public class ShootingController : MonoBehaviour
     [Header("Effects")]
     [Tooltip("The effect to create when this fires")]
     public GameObject fireEffect;
+    [Tooltip("Whether shooting drains health")]
+    public bool fireDamageCheck = false;
+    [Tooltip("Health drain from shooting")]
+    public float fireDamage = 1.0f;
+
 
     //The input manager which manages player input
     private InputManager inputManager = null;
 
+
+
     /// <summary>
     /// Description:
     /// Standard unity function that runs every frame
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     private void Update()
     {
@@ -55,23 +60,16 @@ public class ShootingController : MonoBehaviour
     /// <summary>
     /// Description:
     /// Standard unity function that runs when the script starts
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     private void Start()
     {
         SetupInput();
+        HealthImpact = GetComponent<Health>();
     }
 
     /// <summary>
     /// Description:
     /// Attempts to set up input if this script is player controlled and input is not already correctly set up 
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     void SetupInput()
     {
@@ -92,10 +90,6 @@ public class ShootingController : MonoBehaviour
     /// <summary>
     /// Description:
     /// Reads input from the input manager
-    /// Inputs:
-    /// None
-    /// Returns:
-    /// void (no return)
     /// </summary>
     void ProcessInput()
     {
@@ -111,10 +105,6 @@ public class ShootingController : MonoBehaviour
     /// <summary>
     /// Description:
     /// Fires a projectile if possible
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// void (no return)
     /// </summary>
     public void Fire()
     {
@@ -128,6 +118,10 @@ public class ShootingController : MonoBehaviour
             {
                 Instantiate(fireEffect, transform.position, transform.rotation, null);
             }
+            if (fireDamageCheck && HealthImpact != null)
+            {
+                HealthImpact.TakeDamage(fireDamage);
+            }
 
             // Restart the cooldown
             lastFired = Time.timeSinceLevelLoad;
@@ -137,10 +131,6 @@ public class ShootingController : MonoBehaviour
     /// <summary>
     /// Description:
     /// Spawns a projectile and sets it up
-    /// Inputs: 
-    /// none
-    /// Returns: 
-    /// void (no return)
     /// </summary>
     public void SpawnProjectile()
     {

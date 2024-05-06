@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// This class inherits from the UIelement class and handles the display of the high score
 /// </summary>
 public class HighScoreDisplay : UIelement
 {
-    [Tooltip("The text UI to use for display")]
-    public Text displayText = null;
+    [Tooltip("The TMP UI to use for display")]
+    public TextMeshProUGUI displayText = null; // Change Text to TextMeshProUGUI
 
     /// <summary>
     /// Description:
@@ -23,7 +24,7 @@ public class HighScoreDisplay : UIelement
     {
         if (displayText != null)
         {
-            displayText.text = "High Score: " + GameManager.instance.highScore.ToString();
+            displayText.text = "Legacy of Others helped: " + GameManager.instance.highScore.ToString();
         }
     }
 

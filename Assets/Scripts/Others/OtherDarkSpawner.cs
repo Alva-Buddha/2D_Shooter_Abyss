@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// A class which spawns enemies in an area around it.
@@ -13,6 +14,8 @@ public class OtherDarkSpawner : MonoBehaviour
     public GameObject OtherDarkPrefab = null;
     [Tooltip("The target of the spwaned enemies")]
     public Transform target = null;
+    [Tooltip("Other bar")]
+    public Slider otherBar = null;
 
     [Header("Spawn Position & Orientation")]
     [Tooltip("The distance within which enemies can spawn in the X direction")]
@@ -43,6 +46,14 @@ public class OtherDarkSpawner : MonoBehaviour
 
     [Tooltip("The object to make OtherDarks child objects of.")]
     public Transform OtherDarkHolder = null;
+
+    private void Start()
+    {
+        if (otherBar != null)
+        {
+            otherBar.maxValue = maxSpawn;
+        }
+    }
 
     private void Update()
     {
@@ -87,6 +98,8 @@ public class OtherDarkSpawner : MonoBehaviour
                 OtherDarkGameObject.transform.SetParent(OtherDarkHolder);
             }
 
+            OtherDarkGameObject.GetComponent<OtherDark>().PlayerObject = GameObject.FindWithTag("Player");
+            OtherDarkGameObject.GetComponent<OtherDark>().otherBar = otherBar;
 
             // Incremment the spawn count
             currentlySpawned++;

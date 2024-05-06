@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// This class handles the health state of a game object.
@@ -11,14 +12,16 @@ public class Health : MonoBehaviour
     [Header("Team Settings")]
     [Tooltip("The team associated with this damage")]
     public int teamId = 0;
+    [Tooltip("Health bar")]
+    public Slider healthBarSlider = null;
 
     [Header("Health Settings")]
     [Tooltip("The default health value")]
-    public int defaultHealth = 1;
+    public float defaultHealth = 1.0f;
     [Tooltip("The maximum health value")]
-    public int maximumHealth = 1;
+    public float maximumHealth = 1.0f;
     [Tooltip("The current in game health value")]
-    public int currentHealth = 1;
+    public float currentHealth = 1.0f;
     [Tooltip("Invulnerability duration, in seconds, after taking damage")]
     public float invincibilityTime = 3f;
     [Tooltip("Whether or not this health is always invincible")]
@@ -32,14 +35,32 @@ public class Health : MonoBehaviour
     [Tooltip("The maximum number of lives this health can have")]
     public int maximumLives = 5;
 
+    [Header("Damage and recovery settings")]
+    [Tooltip("Activate constant health loss per second")]
+    public bool constantDrain = false;
+    [Tooltip("Health loss per second")]
+    public float drainPerSec = 1.0f;
+
+    private float updateTime = 1.0f;
+
     void Start()
     {
         SetRespawnPoint(transform.position);
+        updateTime += Time.time;
+        if (healthBarSlider != null)
+        {
+            healthBarSlider.maxValue = maximumHealth;
+        }
     }
 
     void Update()
     {
         InvincibilityCheck();
+        if (constantDrain && Time.time > updateTime)
+        {
+            TakeDamage(drainPerSec);
+            updateTime = 1 + Time.time;
+        }
     }
 
     // The specific game time when the health can be damged again
@@ -51,10 +72,6 @@ public class Health : MonoBehaviour
     /// Description:
     /// Checks against the current time and the time when the health can be damaged again.
     /// Removes invicibility if the time frame has passed
-    /// Inputs:
-    /// None
-    /// Returns:
-    /// void (no return)
     /// </summary>
     private void InvincibilityCheck()
     {
@@ -69,10 +86,6 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Changes the respawn position to a new position
-    /// Inputs:
-    /// Vector3 newRespawnPosition
-    /// Returns:
-    /// void (no return)
     /// </summary>
     /// <param name="newRespawnPosition">The new position to respawn at</param>
     public void SetRespawnPoint(Vector3 newRespawnPosition)
@@ -83,10 +96,6 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Repositions the health's game object to the respawn position and resets the health to the default value
-    /// Inputs:
-    /// None
-    /// Returns:
-    /// void (no return)
     /// </summary>
     void Respawn()
     {
@@ -97,13 +106,9 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Applies damage to the health unless the health is invincible.
-    /// Inputs:
-    /// int damageAmount
-    /// Returns:
-    /// void (no return)
     /// </summary>
     /// <param name="damageAmount">The amount of damage to take</param>
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(float damageAmount)
     {
         if (isInvincableFromDamage || isAlwaysInvincible)
         {
@@ -118,6 +123,10 @@ public class Health : MonoBehaviour
             timeToBecomeDamagableAgain = Time.time + invincibilityTime;
             isInvincableFromDamage = true;
             currentHealth -= damageAmount;
+            if (healthBarSlider!=null)
+            {
+                healthBarSlider.value = currentHealth;
+            }
             CheckDeath();
         }
     }
@@ -125,18 +134,18 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Applies healing to the health, capped out at the maximum health.
-    /// Inputs:
-    /// int healingAmount
-    /// Returns:
-    /// void (no return)
     /// </summary>
     /// <param name="healingAmount">How much healing to apply</param>
-    public void ReceiveHealing(int healingAmount)
+    public void ReceiveHealing(float healingAmount)
     {
         currentHealth += healingAmount;
         if (currentHealth > maximumHealth)
         {
             currentHealth = maximumHealth;
+        }
+        if (healthBarSlider != null)
+        {
+            healthBarSlider.value = currentHealth;
         }
         CheckDeath();
     }
@@ -151,11 +160,6 @@ public class Health : MonoBehaviour
     /// Description:
     /// Checks if the health is dead or not. If it is, true is returned, false otherwise.
     /// Calls Die() if the health is dead.
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// bool
-    /// </summary>
     /// <returns>Bool: true or false value representing if the health has died or not (true for dead)</returns>
     bool CheckDeath()
     {
@@ -171,10 +175,6 @@ public class Health : MonoBehaviour
     /// Description:
     /// Handles the death of the health. If a death effect is set, it is created. If lives are being used, the health is respawned.
     /// If lives are not being used or the lives are 0 then the health's game object is destroyed.
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     public void Die()
     {
@@ -196,10 +196,6 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Handles the death of the health when lives are being used
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     void HandleDeathWithLives()
     {
@@ -225,10 +221,6 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Description:
     /// Handles death when lives are not being used
-    /// Inputs:
-    /// none
-    /// Returns:
-    /// void (no return)
     /// </summary>
     void HandleDeathWithoutLives()
     {

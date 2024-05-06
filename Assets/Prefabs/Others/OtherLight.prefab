@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6509461030288953630}
   - component: {fileID: 8731572602722621212}
   - component: {fileID: -7218209096520484243}
+  - component: {fileID: 8081420827890434183}
   - component: {fileID: -3506893215504899973}
   - component: {fileID: -4732276971885877476}
   - component: {fileID: -825354569944791811}
@@ -159,6 +160,7 @@ MonoBehaviour:
   useAvoidance: 1
   useFlocking: 1
   useSpaceLimits: 1
+  useAttract: 1
 --- !u!114 &-7218209096520484243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +179,24 @@ MonoBehaviour:
   avoidRadius: 1
   avoidAngle: 180
   avoidWeight: 1
+--- !u!114 &8081420827890434183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5943312051007336022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f732a9cec6a60e43863dfc0527270cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attractLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  attractRadius: 20
+  attractAngle: 45
+  attractWeight: 0.5
 --- !u!114 &-3506893215504899973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freeRadius: 1.5
-  bounceWeight: 5
+  bounceWeight: 20
 --- !u!96 &-825354569944791811
 TrailRenderer:
   serializedVersion: 3

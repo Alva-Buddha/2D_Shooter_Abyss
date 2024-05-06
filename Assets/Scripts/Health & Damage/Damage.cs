@@ -23,6 +23,11 @@ public class Damage : MonoBehaviour
     [Tooltip("Whether or not to apply damage on non-trigger collider collisions")]
     public bool dealDamageOnCollision = true;
 
+    private void Start()
+    {
+        
+    }
+
     /// <summary>
     /// Standard Unity function called whenever a Collider (3D) enters any attached 3D trigger collider
     /// Inputs: Collider collision

@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 75d7f6d701585b243b26e459fde78b78, type: 2}
+  - {fileID: 2100000, guid: 81fb30e1af1ef654b88055eb420b06f7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamId: 1
+  healthBarSlider: {fileID: 0}
   defaultHealth: 1
   maximumHealth: 1
   currentHealth: 1
@@ -133,6 +134,8 @@ MonoBehaviour:
   useLives: 0
   currentLives: 3
   maximumLives: 5
+  constantDrain: 0
+  drainPerSec: 1
   deathEffect: {fileID: 0}
   hitEffect: {fileID: 0}
 --- !u!54 &7433137335790068979
@@ -176,9 +179,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avoidLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
   avoidRadius: 7
-  avoidAngle: 120
+  avoidAngle: 90
   avoidWeight: 5
 --- !u!114 &-4124965789337707065
 MonoBehaviour:
@@ -229,13 +232,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   degreeMax: 90
   moveSpeedBase: 5
-  scoreValue: 5
+  scoreValue: 1
   inertiaFactor: 2
   randomFactor: 0.5
   convertPrefab: {fileID: 5943312051007336022, guid: 595651d741963b9458ba5d774f5bdd83, type: 3}
   useAvoidance: 1
   useFlocking: 1
   useSpaceLimits: 1
+  HealonDamage: 1
+  HealAmount: 5
+  PlayerObject: {fileID: 0}
+  otherBar: {fileID: 0}
 --- !u!96 &-2808785374442576790
 TrailRenderer:
   serializedVersion: 3

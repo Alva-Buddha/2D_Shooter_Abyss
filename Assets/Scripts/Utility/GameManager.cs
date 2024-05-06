@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class which manages the game
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("The player's score")]
     [SerializeField] private int gameManagerScore = 0;
 
+    [Tooltip("Score bar")]
+    public Slider scoreBar = null;
+
     // Static getter/setter for player score (for convenience)
     public static int score
     {
@@ -38,6 +42,10 @@ public class GameManager : MonoBehaviour
             instance.gameManagerScore = value;
         }
     }
+
+    // Total time played
+    [Tooltip("Total time played")]
+    public float totalTimePlayed = 0;
 
     // The highest score obtained by this player
     [Tooltip("The highest score acheived on this device")]
@@ -98,6 +106,11 @@ public class GameManager : MonoBehaviour
         HandleStartUp();
     }
 
+    private void LateUpdate()
+    {
+        totalTimePlayed += Time.deltaTime;
+    }
+
     /// <summary>
     /// Description:
     /// Handles necessary activities on start up such as getting the highscore and score, updating UI elements, 
@@ -117,10 +130,18 @@ public class GameManager : MonoBehaviour
         {
             score = PlayerPrefs.GetInt("score");
         }
+        if (PlayerPrefs.HasKey("totaltime"))
+        {
+            totalTimePlayed = PlayerPrefs.GetFloat("totaltime");
+        }
         UpdateUIElements();
         if (printDebugOfWinnableStatus)
         {
             FigureOutHowManyEnemiesExist();
+        }
+        if (scoreBar!=null)
+        {
+            scoreBar.maxValue = numberOfEnemiesFoundAtStart;
         }
     }
 
@@ -206,6 +227,7 @@ public class GameManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         SaveHighScore();
+        SaveTime();
         ResetScore();
     }
 
@@ -221,10 +243,8 @@ public class GameManager : MonoBehaviour
     public static void AddScore(int scoreAmount)
     {
         score += scoreAmount;
-        if (score > instance.highScore)
-        {
-            SaveHighScore();
-        }
+        instance.highScore += scoreAmount;
+        SaveHighScore();
         UpdateUIElements();
     }
     
@@ -252,11 +272,16 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static void SaveHighScore()
     {
-        if (score > instance.highScore)
+        if (score > 0)
         {
-            PlayerPrefs.SetInt("highscore", score);
-            instance.highScore = score;
+            PlayerPrefs.SetInt("highscore", instance.highScore);
         }
+        UpdateUIElements();
+    }
+
+    public static void SaveTime()
+    {
+        PlayerPrefs.SetFloat("totaltime", instance.totalTimePlayed);
         UpdateUIElements();
     }
 
@@ -275,7 +300,6 @@ public class GameManager : MonoBehaviour
         {
             instance.highScore = 0;
         }
-        UpdateUIElements();
     }
 
     /// <summary>
@@ -307,8 +331,8 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("score", score);
         if (uiManager != null)
         {
-            player.SetActive(false);
-            uiManager.allowPause = false;
+            //player.SetActive(false);
+            //uiManager.allowPause = false;
             uiManager.GoToPage(gameVictoryPageIndex);
             if (victoryEffect != null)
             {
