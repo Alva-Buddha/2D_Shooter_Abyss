@@ -334,6 +334,7 @@ public class GameManager : MonoBehaviour
             //player.SetActive(false);
             //uiManager.allowPause = false;
             uiManager.GoToPage(gameVictoryPageIndex);
+            uiManager.UpdateUI();
             if (victoryEffect != null)
             {
                 Instantiate(victoryEffect, transform.position, transform.rotation, null);
@@ -370,6 +371,7 @@ public class GameManager : MonoBehaviour
         {
             uiManager.allowPause = false;
             uiManager.GoToPage(gameOverPageIndex);
+            uiManager.UpdateUI();
         }
     }
 }
