@@ -42,6 +42,10 @@ public class ShootingController : MonoBehaviour
     [Tooltip("Health drain from shooting")]
     public float fireDamage = 1.0f;
 
+
+    //The input manager which manages player input
+    private InputManager inputManager = null;
+
     [Header("Message associated with 1st projectile")]
     [Tooltip("Should a message be sent on 1st projectile")]
     public bool firstProjectileMessage = true;
@@ -49,9 +53,6 @@ public class ShootingController : MonoBehaviour
     [TextArea]
     [Tooltip("Message to be sent on 1st projectile")]
     public string firstProjectileMessageText = "First Projectile Fired";    
-
-    //The input manager which manages player input
-    private InputManager inputManager = null;
 
     //flag to check if first projectile has been fired
     private bool firstProjectileFired = false;

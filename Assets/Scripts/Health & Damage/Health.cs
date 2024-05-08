@@ -43,6 +43,30 @@ public class Health : MonoBehaviour
 
     private float updateTime = 1.0f;
 
+    [Header("Message associated with health")]
+    [Tooltip("Should a message be sent on 1st drain of health")]
+    public bool firstDrainMessage = false;
+    [TextArea]
+    [Tooltip("Message to be sent on 1st drain of health")]
+    public string firstDrainText = null;
+
+    [Tooltip("Should a message be sent on 1st damage")]
+    public bool firstDamageMessage = false;
+    [TextArea]
+    [Tooltip("Message to be sent on 1st drain of health")]
+    public string firstDamageText = null;
+
+    //flag to check if first drain has been happened
+    private bool firstDrainFlag = false;
+
+    //flag to check if first damage has been happened
+    private bool firstDamage = false;
+
+    [Tooltip("GameObject to display message")]
+    public GameObject messageObject = null;
+
+    private MessageManager messageManager;
+
     void Start()
     {
         SetRespawnPoint(transform.position);
@@ -59,6 +83,16 @@ public class Health : MonoBehaviour
         if (constantDrain && Time.time > updateTime)
         {
             TakeDamage(drainPerSec);
+            //Send message on first drain
+            if (firstDrainMessage && !firstDrainFlag)
+            {
+                if (messageObject != null)
+                {
+                    messageManager = messageObject.GetComponent<MessageManager>();
+                    messageManager.AddMessage(firstDrainText);
+                    firstDrainFlag = true;
+                }
+            }
             updateTime = 1 + Time.time;
         }
     }
@@ -123,6 +157,19 @@ public class Health : MonoBehaviour
             timeToBecomeDamagableAgain = Time.time + invincibilityTime;
             isInvincableFromDamage = true;
             currentHealth -= damageAmount;
+            //Send message on first damage
+            if (firstDamageMessage && !firstDamage)
+            {
+                if (!firstDrainMessage || firstDrainFlag)
+                {
+                    if (messageObject != null)
+                    {
+                        messageManager = messageObject.GetComponent<MessageManager>();
+                        messageManager.AddMessage(firstDamageText);
+                        firstDamage = true;
+                    }
+                }
+            }
             if (healthBarSlider!=null)
             {
                 healthBarSlider.value = currentHealth;

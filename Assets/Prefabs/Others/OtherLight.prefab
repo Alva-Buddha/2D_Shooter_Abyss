@@ -196,7 +196,7 @@ MonoBehaviour:
     m_Bits: 8
   attractRadius: 20
   attractAngle: 45
-  attractWeight: 0.5
+  attractWeight: 0.2
 --- !u!114 &-3506893215504899973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,8 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc26b6810860d384f8a3ba2273796309, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  freeRadius: 1.5
-  bounceWeight: 20
+  freeRadius: 2
+  bounceWeight: 100
 --- !u!96 &-825354569944791811
 TrailRenderer:
   serializedVersion: 3

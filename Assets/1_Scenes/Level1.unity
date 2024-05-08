@@ -2721,7 +2721,8 @@ MonoBehaviour:
   fireDamageCheck: 1
   fireDamage: 1
   firstProjectileMessage: 1
-  firstProjectileMessageText: You need to sacrifice your light to help the Others
+  firstProjectileMessageText: ... you sacrifice your light whenever you fire light
+    at the Others...
   messageObject: {fileID: 1757578806}
 --- !u!114 &940998323
 MonoBehaviour:
@@ -2809,6 +2810,11 @@ MonoBehaviour:
   maximumLives: 5
   constantDrain: 1
   drainPerSec: 1
+  firstDrainMessage: 1
+  firstDrainText: ... the Void's entropy slowly but constantly drains your light...
+  firstDamageMessage: 0
+  firstDamageText: 
+  messageObject: {fileID: 1757578806}
   deathEffect: {fileID: 0}
   hitEffect: {fileID: 0}
 --- !u!114 &940998327
@@ -10753,7 +10759,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 78ed17a549942da49bfde5926d68620a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 36ce55d811e895a45b290228bc91ce0c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
