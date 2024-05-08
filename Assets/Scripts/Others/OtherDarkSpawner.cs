@@ -47,6 +47,21 @@ public class OtherDarkSpawner : MonoBehaviour
     [Tooltip("The object to make OtherDarks child objects of.")]
     public Transform OtherDarkHolder = null;
 
+    //Variables to add message for first spawn
+    [Header("Message associated with 1st spawn")]
+    [Tooltip("Should a message be sent on 1st spawn")]
+    public bool firstSpawnMessage = true;
+    [TextArea]
+    [Tooltip("Message to be sent on 1st spawn")]
+    public string firstSpawnMessageText = null;
+
+    //flag to check if first spawn has been happened
+    private bool firstSpawnFlag = false;
+
+    //GameObject to display message
+    public GameObject messageObject = null;
+
+
     private void Start()
     {
         if (otherBar != null)
@@ -104,6 +119,17 @@ public class OtherDarkSpawner : MonoBehaviour
             // Incremment the spawn count
             currentlySpawned++;
             lastSpawnTime = Time.timeSinceLevelLoad;
+
+            // Send message on first spawn
+            if (firstSpawnMessage && !firstSpawnFlag)
+            {
+                if (messageObject != null)
+                {
+                    MessageManager messageManager = messageObject.GetComponent<MessageManager>();
+                    messageManager.AddMessage(firstSpawnMessageText);
+                    firstSpawnFlag = true;
+                }
+            }
         }
     }
 

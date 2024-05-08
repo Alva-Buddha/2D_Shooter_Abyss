@@ -33,6 +33,22 @@ public class GameManager : MonoBehaviour
     [Tooltip("Toggle Pause")]
     public Button PauseButton = null;
 
+    [Header("Message associated with 1st score")]
+    [Tooltip("Should a message be sent on 1st score")]
+    public bool firstScoreMessage = false;
+
+    [TextArea]
+    [Tooltip("Message to be sent on 1st Score")]
+    public string firstScoreMessageText = null;
+
+    //flag to check if first Score has been fired
+    private bool firstScoreFlag = false;
+
+    [Tooltip("GameObject to display message")]
+    public GameObject messageObject = null;
+
+    private MessageManager messageManager;
+
     // Static getter/setter for player score (for convenience)
     public static int score
     {
@@ -46,6 +62,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [Header("Game Progress / Victory Settings")]
+
     // Total time played
     [Tooltip("Total time played")]
     public float totalTimePlayed = 0;
@@ -54,7 +72,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("The highest score acheived on this device")]
     public int highScore = 0;
 
-    [Header("Game Progress / Victory Settings")]
+    
     [Tooltip("Whether the game is winnable or not \nDefault: true")]
     public bool gameIsWinnable = true;
     [Tooltip("The number of enemies that must be defeated to win the game")]
@@ -247,6 +265,16 @@ public class GameManager : MonoBehaviour
     {
         score += scoreAmount;
         instance.highScore += scoreAmount;
+        //send message if first score
+        if (instance.firstScoreMessage && !instance.firstScoreFlag)
+        {
+            if (instance.messageObject != null)
+            {
+                instance.messageManager = instance.messageObject.GetComponent<MessageManager>();
+                instance.messageManager.AddMessage(instance.firstScoreMessageText);
+                instance.firstScoreFlag = true;
+            }
+        }
         SaveHighScore();
         UpdateUIElements();
     }

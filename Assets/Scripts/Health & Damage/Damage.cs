@@ -23,6 +23,9 @@ public class Damage : MonoBehaviour
     [Tooltip("Whether or not to apply damage on non-trigger collider collisions")]
     public bool dealDamageOnCollision = true;
 
+    [Tooltip("Should this object consume Others (instead of converting them via doBeforeDestroy)")]
+    public bool consumeOthers = false;
+
     private void Start()
     {
         
@@ -71,11 +74,15 @@ public class Damage : MonoBehaviour
         {
             if (collidedHealth.teamId != this.teamId)
             {
-                collidedHealth.TakeDamage(damageAmount);
                 if (hitEffect != null)
                 {
                     Instantiate(hitEffect, transform.position, transform.rotation, null);
                 }
+                if (consumeOthers && collisionGameObject.GetComponent<OtherDark>() != null)
+                {
+                    Destroy(collisionGameObject);
+                }
+                collidedHealth.TakeDamage(damageAmount);
                 if (destroyAfterDamage)
                 {
                     if (gameObject.GetComponent<OtherDark>() != null)

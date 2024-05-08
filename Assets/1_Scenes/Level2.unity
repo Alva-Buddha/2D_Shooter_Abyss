@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.00019707362, g: 0.0010639091, b: 0.0022099072, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -229,7 +229,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 91684117}
@@ -2763,6 +2763,7 @@ MonoBehaviour:
   destroyAfterDamage: 0
   DamageOnTrigEnter: 1
   dealDamageOnCollision: 1
+  consumeOthers: 0
 --- !u!54 &940998325
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3236,7 +3237,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1003123302}
@@ -4009,7 +4010,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level2
+          m_StringArgument: Level3
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1183453858}
@@ -4555,7 +4556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Epoch 1 | Introduction to the Void
+  m_text: Epoch 2 | The Hungering Void
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 09c64f0b3dbb9814e8c8bf84cb1d8a6d, type: 2}
   m_sharedMaterial: {fileID: -3551576475337240347, guid: 09c64f0b3dbb9814e8c8bf84cb1d8a6d, type: 2}
@@ -12178,7 +12179,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2036123209}

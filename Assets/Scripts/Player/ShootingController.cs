@@ -52,7 +52,7 @@ public class ShootingController : MonoBehaviour
 
     [TextArea]
     [Tooltip("Message to be sent on 1st projectile")]
-    public string firstProjectileMessageText = "First Projectile Fired";    
+    public string firstProjectileMessageText = null;    
 
     //flag to check if first projectile has been fired
     private bool firstProjectileFired = false;
@@ -173,7 +173,10 @@ public class ShootingController : MonoBehaviour
             if (!firstProjectileFired && firstProjectileMessage)
             {
                 firstProjectileFired = true;
-                messageManager.AddMessage(firstProjectileMessageText);
+                if(messageManager != null)
+                {
+                    messageManager.AddMessage(firstProjectileMessageText);
+                }    
             }
         }
     }
