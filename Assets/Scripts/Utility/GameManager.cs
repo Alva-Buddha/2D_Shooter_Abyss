@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("Score bar")]
     public Slider scoreBar = null;
 
+    [Tooltip("Toggle Pause")]
+    public Button PauseButton = null;
+
     // Static getter/setter for player score (for convenience)
     public static int score
     {
@@ -332,7 +335,9 @@ public class GameManager : MonoBehaviour
         if (uiManager != null)
         {
             //player.SetActive(false);
-            //uiManager.allowPause = false;
+            player.GetComponent<Health>().isAlwaysInvincible = true;    
+            uiManager.allowPause = false;
+            PauseButton.interactable = false;
             uiManager.GoToPage(gameVictoryPageIndex);
             uiManager.UpdateUI();
             if (victoryEffect != null)
@@ -370,6 +375,7 @@ public class GameManager : MonoBehaviour
         if (uiManager != null)
         {
             uiManager.allowPause = false;
+            PauseButton.interactable = false;
             uiManager.GoToPage(gameOverPageIndex);
             uiManager.UpdateUI();
         }

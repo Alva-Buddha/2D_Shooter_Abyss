@@ -327,7 +327,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 2 | The Hungering void
+  m_Text: 2 | The Hungering Void
 --- !u!222 &206314463
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8108,7 +8108,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 3 | The endless Void
+  m_Text: 3 | The Endless Void
 --- !u!222 &1827197436
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8320,7 +8320,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 1 | Introduction to the void
+  m_Text: 1 | Introduction to the Void
 --- !u!222 &1993559822
 CanvasRenderer:
   m_ObjectHideFlags: 0

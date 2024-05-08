@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 91684115}
   - component: {fileID: 91684114}
   - component: {fileID: 91684113}
+  - component: {fileID: 91684117}
   m_Layer: 5
   m_Name: Restart Level
   m_TagString: Untagged
@@ -219,7 +220,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1070610423}
+      - m_Target: {fileID: 91684113}
         m_TargetAssemblyTypeName: LevelLoadButton, Assembly-CSharp
         m_MethodName: LoadLevelByName
         m_Mode: 5
@@ -228,7 +229,19 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 91684117}
+        m_TargetAssemblyTypeName: ScoreReseter, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &91684115
@@ -269,6 +282,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91684111}
   m_CullTransparentMesh: 0
+--- !u!114 &91684117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91684111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0161ad4c116713e4583893c6bea211a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &114745413
 GameObject:
   m_ObjectHideFlags: 0
@@ -2930,6 +2955,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 615664105}
     - target: {fileID: 2278078125148925350, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
+      propertyPath: PauseButton
+      value: 
+      objectReference: {fileID: 2130998715}
+    - target: {fileID: 2278078125148925350, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
       propertyPath: gameIsWinnable
       value: 1
       objectReference: {fileID: 0}
@@ -3089,6 +3118,7 @@ GameObject:
   - component: {fileID: 1003123300}
   - component: {fileID: 1003123299}
   - component: {fileID: 1003123297}
+  - component: {fileID: 1003123302}
   m_Layer: 5
   m_Name: Restart Level
   m_TagString: Untagged
@@ -3172,7 +3202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1070610423}
+      - m_Target: {fileID: 1003123297}
         m_TargetAssemblyTypeName: LevelLoadButton, Assembly-CSharp
         m_MethodName: LoadLevelByName
         m_Mode: 5
@@ -3181,7 +3211,19 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1003123302}
+        m_TargetAssemblyTypeName: ScoreReseter, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1003123300
@@ -3222,6 +3264,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1003123295}
   m_CullTransparentMesh: 0
+--- !u!114 &1003123302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003123295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0161ad4c116713e4583893c6bea211a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1043897805
 GameObject:
   m_ObjectHideFlags: 0
@@ -3857,6 +3911,7 @@ GameObject:
   - component: {fileID: 1183453855}
   - component: {fileID: 1183453854}
   - component: {fileID: 1183453853}
+  - component: {fileID: 1183453858}
   m_Layer: 5
   m_Name: StartNextLevel
   m_TagString: Untagged
@@ -3929,7 +3984,19 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level2
+          m_StringArgument: Level3
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1183453858}
+        m_TargetAssemblyTypeName: ScoreReseter, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1183453855
@@ -3990,6 +4057,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1183453858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183453852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0161ad4c116713e4583893c6bea211a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1228256273
 GameObject:
   m_ObjectHideFlags: 0
@@ -11754,6 +11833,7 @@ GameObject:
   - component: {fileID: 2036123207}
   - component: {fileID: 2036123206}
   - component: {fileID: 2036123204}
+  - component: {fileID: 2036123209}
   m_Layer: 5
   m_Name: Restart Level
   m_TagString: Untagged
@@ -11837,7 +11917,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1771702014}
+      - m_Target: {fileID: 2036123204}
         m_TargetAssemblyTypeName: LevelLoadButton, Assembly-CSharp
         m_MethodName: LoadLevelByName
         m_Mode: 5
@@ -11846,7 +11926,19 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level1
+          m_StringArgument: Level2
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2036123209}
+        m_TargetAssemblyTypeName: ScoreReseter, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2036123207
@@ -11887,6 +11979,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2036123202}
   m_CullTransparentMesh: 0
+--- !u!114 &2036123209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036123202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0161ad4c116713e4583893c6bea211a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2038933480
 GameObject:
   m_ObjectHideFlags: 0
