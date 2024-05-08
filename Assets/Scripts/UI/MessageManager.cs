@@ -4,60 +4,99 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using System.Text;
 
 public class MessageManager : MonoBehaviour
 {
     [Header("Message details")]
 
-    //UIObject to change panel size containing TMP object for message
     [Tooltip("UIObject for message panel")]
     public GameObject messagePanel;
-    //UIObject to change text of message
-    [Tooltip("UIObject for message to be displayed")]
-    public Text messageText; 
-    
+
+    [Tooltip("TMP object for message to be displayed")]
+    public TextMeshProUGUI messageText;
+
     [Tooltip("Duration of display")]
     public float messageDuration = 5f;
-    
-    private float messageTimer = 0f;
 
+    // Default panel
+    private Vector2 defaultSize;
+    private string defaultText;
+    private float defaultTextHeight;
 
-    // Start is called before the first frame update
+    // Queue to store messages
+    private Queue<string> messages = new Queue<string>();
+
+    //Queue to store message times
+    private Queue<float> messageTimes = new Queue<float>();
+
+    // Reference to the RectTransform component
+    private RectTransform rt;
+
     void Start()
     {
-        messageText.gameObject.SetActive(false);
+        rt = messagePanel.GetComponent<RectTransform>();
+        defaultSize = rt.sizeDelta; // Save the default panel size
+        defaultText = messageText.text; // Save the default text
+        defaultTextHeight = messageText.preferredHeight;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (messageTimer > 0)
+        //Check message time vs current time and message duration and remove message if necessary
+        if (messageTimes.Count > 0 && Time.time - messageTimes.Peek() > messageDuration)
         {
-            messageTimer -= Time.deltaTime;
-            if (messageTimer <= 0)
-            {
-                messageText.gameObject.SetActive(false);
-            }
+            RemoveMessage();
         }
     }
 
-    /// <summary>
-    /// Shows the message sent as a part of the message input
-    /// </summary>
-    /// <param name="message">Text to be displayed</param>
-    public void ShowMessage(string message)
+    // Add a message to the queue
+    public void AddMessage(string message)
     {
-        //Get height required for message given text box width
-        messageText.text = message;
-        float height = messageText.preferredHeight;
+        messages.Enqueue(message);
+        messageTimes.Enqueue(Time.time);
+        UpdateMessageText();
+        UpdatePanelSize();
+    }
 
-        //change panel height to fit message
-        RectTransform rt = messagePanel.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y + messageText.preferredHeight);
 
-        //Set the message text to the message input
-        messageText.text = message;
-        messageText.gameObject.SetActive(true);
-        messageTimer = messageDuration;
+    // Update the message text
+    private void UpdateMessageText()
+    {
+        if (messages.Count > 0)
+        {
+            //Join current queue to default text
+            StringBuilder sb = new StringBuilder();
+            sb.Append(defaultText);
+            foreach (string message in messages)
+            {
+                sb.Append("\n\n");
+                sb.Append(message);
+            }
+            messageText.text = sb.ToString();
+        }
+        else
+        {
+            messageText.text = defaultText;
+        }
+    }
+
+    // Update the panel size to fit the message
+    private void UpdatePanelSize()
+    {
+        rt.sizeDelta = new Vector2(defaultSize.x, defaultSize.y + (messageText.preferredHeight)-defaultTextHeight);
+        //Debug.Log("update panel size called with preferred height = " + messageText.preferredHeight);
+    }
+
+    // Remove the message from the queue
+    public void RemoveMessage()
+    {
+        if (messages.Count > 0)
+        {
+            messages.Dequeue();
+            messageTimes.Dequeue();
+            UpdateMessageText();
+            UpdatePanelSize();
+        }
     }
 }

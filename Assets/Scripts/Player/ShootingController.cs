@@ -42,11 +42,24 @@ public class ShootingController : MonoBehaviour
     [Tooltip("Health drain from shooting")]
     public float fireDamage = 1.0f;
 
+    [Header("Message associated with 1st projectile")]
+    [Tooltip("Should a message be sent on 1st projectile")]
+    public bool firstProjectileMessage = true;
+
+    [TextArea]
+    [Tooltip("Message to be sent on 1st projectile")]
+    public string firstProjectileMessageText = "First Projectile Fired";    
 
     //The input manager which manages player input
     private InputManager inputManager = null;
 
+    //flag to check if first projectile has been fired
+    private bool firstProjectileFired = false;
 
+    [Tooltip("GameObject to display message")]
+    public GameObject messageObject = null;
+
+    private MessageManager messageManager;
 
     /// <summary>
     /// Description:
@@ -65,6 +78,10 @@ public class ShootingController : MonoBehaviour
     {
         SetupInput();
         HealthImpact = GetComponent<Health>();
+        if (messageObject != null)
+        {
+            messageManager = messageObject.GetComponent<MessageManager>();
+        }
     }
 
     /// <summary>
@@ -149,6 +166,13 @@ public class ShootingController : MonoBehaviour
             if (projectileHolder != null)
             {
                 projectileGameObject.transform.SetParent(projectileHolder);
+            }
+
+            //Check if first projectile has been fired
+            if (!firstProjectileFired && firstProjectileMessage)
+            {
+                firstProjectileFired = true;
+                messageManager.AddMessage(firstProjectileMessageText);
             }
         }
     }
