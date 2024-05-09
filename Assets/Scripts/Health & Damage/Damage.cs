@@ -81,6 +81,8 @@ public class Damage : MonoBehaviour
                 if (consumeOthers && collisionGameObject.GetComponent<OtherDark>() != null)
                 {
                     Destroy(collisionGameObject);
+                    //Debug.Log("Consumed OtherDark");
+                    return;
                 }
                 collidedHealth.TakeDamage(damageAmount);
                 if (destroyAfterDamage)

@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-/// <summary>
-/// A class which controls OtherDark behaviour
-/// </summary>
-public class OtherDark : MonoBehaviour
+public class Hunter : MonoBehaviour
 {
     private Flocking Flocking;
     private Avoidance Avoidance;
     private SpaceLimits SpaceLimits;
-    private Health HealthImpact;
+    private Attraction Attraction;
 
     [Header("Settings")]
     [Tooltip("The min speed at which the OtherDark turns")]
@@ -35,6 +32,8 @@ public class OtherDark : MonoBehaviour
     public bool useFlocking = true;
     [Tooltip("Enable or disable space limits to redirect object")]
     public bool useSpaceLimits = true;
+    [Tooltip("Enable or disable attraction behavior.")]
+    public bool useAttract = true;
 
     [Header("Damage Heal Settings")]
     [Tooltip("Should damage to specific enemies heal?")]
@@ -49,29 +48,22 @@ public class OtherDark : MonoBehaviour
     [Tooltip("Other bar")]
     public Slider otherBar = null;
 
-    /// <summary>
-    /// Standard Unity function called once before the first call to Update
-    /// </summary>
-    private void Start()
+
+    // Start is called before the first frame update
+    void Start()
     {
         Flocking = GetComponent<Flocking>();
         Avoidance = GetComponent<Avoidance>();
         SpaceLimits = GetComponent<SpaceLimits>();
+        Attraction = GetComponent<Attraction>();
     }
 
-    /// <summary>
-    /// Default update method
-    /// </summary>
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        // Draw the global forward direction from the object's position
-        //Vector3 globalForward = transform.TransformDirection(Vector3.forward) * 5; 
-        //Debug.DrawLine(transform.position, transform.position + globalForward, Color.blue);
+        
     }
 
-    /// <summary>
-    /// Standard Unity function called after update every frame
-    /// </summary>
     private void LateUpdate()
     {
         MoveBehaviour();
@@ -91,7 +83,7 @@ public class OtherDark : MonoBehaviour
         {
             avoidDirection += Avoidance.GetAvoidanceVector();
             angleAvoidDirection += Avoidance.GetAngleAvoidanceVector(avoidDirection);
-            //Debug.Log("Avoid Target x:" + moveDirection.x + " and y:" + moveDirection.y);
+            //Debug.Log("Avoid Target x:" + avoidDirection.x + " and y:" + avoidDirection.y);
         }
         if (useSpaceLimits && SpaceLimits != null)
         {
@@ -101,6 +93,12 @@ public class OtherDark : MonoBehaviour
         {
             moveDirection += Flocking.GetFlockVector();
         }
+        if (useAttract && Attraction != null)
+        {
+            moveDirection += Attraction.GetAttractVector();
+            //Debug.Log("Attract Target x:" + attractDirection.x + " and y:" + attractDirection.y);
+        }
+
         moveDirection += ((inertiaFactor * this.transform.forward) + RandomMove());
         //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
         Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized)
@@ -109,6 +107,11 @@ public class OtherDark : MonoBehaviour
         movement.z = 0;
         transform.position += movement;
         RotateTowardsMovement(movement, degreeMax);
+    }
+
+    void OnDestroy()
+    {
+        ObjectSpawner.SpawnedObjects.Remove(this.gameObject);
     }
 
     /// <summary>
@@ -135,11 +138,6 @@ public class OtherDark : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
-        ObjectSpawner.SpawnedObjects.Remove(this.gameObject);
-    }
-
     /// <summary>
     /// Adds to the game manager's score the score associated with this OtherDark if one exists
     /// </summary>
@@ -161,8 +159,6 @@ public class OtherDark : MonoBehaviour
             GameManager.instance.IncrementEnemiesDefeated();
         }
     }
-
-   
 
     /// <summary>
     /// Rotates the OtherDark to instantly face the direction it is moving.

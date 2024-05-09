@@ -181,21 +181,21 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void FigureOutHowManyEnemiesExist()
     {
-        List<OtherDarkSpawner> OtherDarkSpawners = FindObjectsOfType<OtherDarkSpawner>().ToList();
-        List<OtherDark> staticEnemies = FindObjectsOfType<OtherDark>().ToList();
+        List<ObjectSpawner> ObjectSpawners = FindObjectsOfType<ObjectSpawner>().ToList();
+        List<Object> staticEnemies = FindObjectsOfType<Object>().ToList();
 
         int numberOfInfiniteSpawners = 0;
         int enemiesFromSpawners = 0;
         int enemiesFromStatic = staticEnemies.Count;
-        foreach(OtherDarkSpawner OtherDarkSpawner in OtherDarkSpawners)
+        foreach(ObjectSpawner ObjectSpawner in ObjectSpawners)
         {
-            if (OtherDarkSpawner.spawnInfinite)
+            if (ObjectSpawner.spawnInfinite)
             {
                 numberOfInfiniteSpawners += 1;
             }
             else
             {
-                enemiesFromSpawners += OtherDarkSpawner.maxSpawn;
+                enemiesFromSpawners += ObjectSpawner.maxSpawn;
             }
         }
         numberOfEnemiesFoundAtStart = enemiesFromSpawners + enemiesFromStatic;
@@ -404,6 +404,7 @@ public class GameManager : MonoBehaviour
         {
             uiManager.allowPause = false;
             PauseButton.interactable = false;
+            Time.timeScale = 0;
             uiManager.GoToPage(gameOverPageIndex);
             uiManager.UpdateUI();
         }

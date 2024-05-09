@@ -16,6 +16,16 @@ public class CameraController : MonoBehaviour
     [Tooltip("The target to follow with this camera")]
     public Transform target = null;
 
+    [Header("CameraZoom")]
+    [Tooltip("The speed at which the camera zooms in and out")]
+    public float zoomSpeed = 1.0f;
+
+    [Tooltip("The minimum size the camera can zoom in to")]
+    public float minZoom = 1.0f;
+
+    [Tooltip("The maximum size the camera can zoom out to")]
+    public float maxZoom = 20.0f;
+
     /// <summary>
     /// Enum to determine camera movement styles
     /// </summary>
@@ -71,6 +81,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         SetCameraPosition();
+        ZoomCamera();
     }
 
     /// <summary>
@@ -160,5 +171,15 @@ public class CameraController : MonoBehaviour
         }
         result.z = cameraZCoordinate;
         return result;
+    }
+
+    private void ZoomCamera()
+    {
+        if (playerCamera.orthographic)
+        {
+            float scrollInput = inputManager.zoomAxis;
+            playerCamera.orthographicSize -= scrollInput * zoomSpeed;
+            playerCamera.orthographicSize = Mathf.Clamp(playerCamera.orthographicSize, minZoom, maxZoom);
+        }
     }
 }

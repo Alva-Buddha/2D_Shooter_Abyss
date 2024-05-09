@@ -7,11 +7,11 @@ using UnityEngine.UI;
 /// <summary>
 /// A class which spawns enemies in an area around it.
 /// </summary>
-public class OtherDarkSpawner : MonoBehaviour
+public class ObjectSpawner : MonoBehaviour
 {
     [Header("GameObject References")]
-    [Tooltip("The OtherDark prefab to use when spawning enemies")]
-    public GameObject OtherDarkPrefab = null;
+    [Tooltip("The SpawnObject prefab to use when spawning enemies")]
+    public GameObject SpawnObjectPrefab = null;
     [Tooltip("The target of the spwaned enemies")]
     public Transform target = null;
     [Tooltip("Other bar")]
@@ -44,8 +44,8 @@ public class OtherDarkSpawner : MonoBehaviour
     // The most recent spawn time
     private float lastSpawnTime = Mathf.NegativeInfinity;
 
-    [Tooltip("The object to make OtherDarks child objects of.")]
-    public Transform OtherDarkHolder = null;
+    [Tooltip("The object to make SpawnObjects child objects of.")]
+    public Transform SpawnObjectHolder = null;
 
     //Variables to add message for first spawn
     [Header("Message associated with 1st spawn")]
@@ -60,6 +60,9 @@ public class OtherDarkSpawner : MonoBehaviour
 
     //GameObject to display message
     public GameObject messageObject = null;
+
+    //List of all spawned objects
+    public static List<GameObject> SpawnedObjects = new List<GameObject>();
 
 
     private void Start()
@@ -77,44 +80,56 @@ public class OtherDarkSpawner : MonoBehaviour
 
     private void CheckSpawnTimer()
     {
-        // If it is time for an OtherDark to be spawned
-        if (Time.timeSinceLevelLoad > lastSpawnTime + spawnDelay && (currentlySpawned < maxSpawn || spawnInfinite))
+        // If it is time for an SpawnObject to be spawned
+        if (Time.timeSinceLevelLoad > lastSpawnTime + spawnDelay && (SpawnedObjects.Count < maxSpawn || spawnInfinite))
         {
             // Determine spawn location
             Vector3 spawnLocation = GetSpawnLocation();
 
-            // Spawn an OtherDark
-            SpawnOtherDark(spawnLocation);
+            // Spawn an SpawnObject
+            SpawnSpawnObject(spawnLocation);
+
+            Debug.Log(SpawnedObjects.Count + " objects spawned.");
         }
     }
 
     /// <summary>
-    /// Spawn and set up an instance of the OtherDark prefab
+    /// Spawn and set up an instance of the SpawnObject prefab
     /// Inputs: Vector3 spawnLocation
     /// Returns: void (no return)
     /// </summary>
     /// <param name="spawnLocation">The location to spawn an enmy at</param>
-    private void SpawnOtherDark(Vector3 spawnLocation)
+    private void SpawnSpawnObject(Vector3 spawnLocation)
     {
         // Make sure the prefab is valid
-        if (OtherDarkPrefab != null)
+        if (SpawnObjectPrefab != null)
         {
             Vector3 lookatorigin = -spawnLocation;
 
-            // Create the OtherDark gameobject
-            GameObject OtherDarkGameObject = Instantiate(OtherDarkPrefab, spawnLocation, 
+            // Create the SpawnObject gameobject
+            GameObject SpawnObjectGameObject = Instantiate(SpawnObjectPrefab, spawnLocation, 
                 Quaternion.LookRotation(lookatorigin)*
                 Quaternion.Euler(angleRange * Random.Range(-1f, 1f), 
                 angleRange * Random.Range(-1f, 1f), 
                 angleRange * Random.Range(-1f, 1f)), null);
 
-            if (OtherDarkHolder != null)
-            {
-                OtherDarkGameObject.transform.SetParent(OtherDarkHolder);
-            }
+            SpawnedObjects.Add(SpawnObjectGameObject);
 
-            OtherDarkGameObject.GetComponent<OtherDark>().PlayerObject = GameObject.FindWithTag("Player");
-            OtherDarkGameObject.GetComponent<OtherDark>().otherBar = otherBar;
+            if (SpawnObjectHolder != null)
+            {
+                SpawnObjectGameObject.transform.SetParent(SpawnObjectHolder);
+            }
+            
+            if(SpawnObjectGameObject.GetComponent<OtherDark>() != null)
+            {
+                SpawnObjectGameObject.GetComponent<OtherDark>().PlayerObject = GameObject.FindWithTag("Player");
+                SpawnObjectGameObject.GetComponent<OtherDark>().otherBar = otherBar;
+            }
+            if (SpawnObjectGameObject.GetComponent<Hunter>() != null)
+            {
+                SpawnObjectGameObject.GetComponent<Hunter>().PlayerObject = GameObject.FindWithTag("Player");
+                SpawnObjectGameObject.GetComponent<Hunter>().otherBar = otherBar;
+            }
 
             // Incremment the spawn count
             currentlySpawned++;
@@ -134,7 +149,7 @@ public class OtherDarkSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a generated spawn location for an OtherDark
+    /// Returns a generated spawn location for an SpawnObject
     /// Inputs: none
     /// </summary>
     /// <returns>Vector3: The spawn location as determined by the function</returns>

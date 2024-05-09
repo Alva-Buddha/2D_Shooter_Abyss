@@ -152,4 +152,15 @@ public class InputManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         pausePressed = false;
     }
+
+    [Header("Camera Zoom Input")]
+    [Tooltip("The zoom input from the mouse scroll wheel")]
+    public float zoomAxis;
+
+    public void ReadZoomInput(InputAction.CallbackContext context)
+    {
+        Vector2 inputVector = context.ReadValue<Vector2>();
+        zoomAxis = inputVector.y/120f;
+        Debug.Log("Zoom Axis: " + zoomAxis);
+    }
 }

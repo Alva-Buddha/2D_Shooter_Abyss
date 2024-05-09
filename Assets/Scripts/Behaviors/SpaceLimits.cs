@@ -34,7 +34,10 @@ public class SpaceLimits : MonoBehaviour
     /// <returns>Vector3: The movement to be used in Avoid movement mode.</returns>
     public Vector3 GetBounceVector()
     {
-
+        if (originObject == null)
+        {
+            return Vector3.zero;
+        }
         Vector3 directionToOrigin = originObject.position - transform.position;
         float distance = directionToOrigin.magnitude;
 

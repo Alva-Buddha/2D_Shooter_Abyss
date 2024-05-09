@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.00019707362, g: 0.0010639091, b: 0.0022099072, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1596,20 +1596,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe23a932dd321c54bbf3b5f4379c2fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OtherDarkPrefab: {fileID: 1507548708794196490, guid: b0fbe3fb00a06e9429141c12d4cfc1bb, type: 3}
+  SpawnObjectPrefab: {fileID: 1507548708794196490, guid: b0fbe3fb00a06e9429141c12d4cfc1bb, type: 3}
   target: {fileID: 940998321}
   otherBar: {fileID: 1725611758}
-  spawnRangeXmax: 20
-  spawnRangeXmin: 10
-  spawnRangeYmax: 20
-  spawnRangeYmin: 10
-  angleRange: 120
-  maxSpawn: 50
+  spawnRangeXmax: 40
+  spawnRangeXmin: 20
+  spawnRangeYmax: 40
+  spawnRangeYmin: 20
+  angleRange: 180
+  maxSpawn: 100
   spawnInfinite: 0
   currentlySpawned: 0
-  spawnDelay: 0.1
-  OtherDarkHolder: {fileID: 1777334504}
-  firstSpawnMessage: 1
+  spawnDelay: 0.5
+  SpawnObjectHolder: {fileID: 1777334504}
+  firstSpawnMessage: 0
   firstSpawnMessageText: ... Others are drawn to your light, but are also terrified
     by it...
   messageObject: {fileID: 1757578806}
@@ -2215,6 +2215,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1440, y: 810}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &785260953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 785260954}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &785260954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785260953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.9546767, y: 7.9668612, z: -2.712886}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &790647520
 GameObject:
   m_ObjectHideFlags: 0
@@ -2700,6 +2731,7 @@ Transform:
   m_Children:
   - {fileID: 2019664368}
   - {fileID: 515075864}
+  - {fileID: 957025276}
   - {fileID: 1557104767}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2724,9 +2756,8 @@ MonoBehaviour:
   fireEffect: {fileID: 0}
   fireDamageCheck: 1
   fireDamage: 1
-  firstProjectileMessage: 1
-  firstProjectileMessageText: ... you sacrifice your light whenever you fire light
-    at the Others...
+  firstProjectileMessage: 0
+  firstProjectileMessageText: 
   messageObject: {fileID: 1757578806}
 --- !u!114 &940998323
 MonoBehaviour:
@@ -2815,8 +2846,8 @@ MonoBehaviour:
   maximumLives: 5
   constantDrain: 1
   drainPerSec: 1
-  firstDrainMessage: 1
-  firstDrainText: ... the Void's entropy slowly but constantly drains your light...
+  firstDrainMessage: 0
+  firstDrainText: 
   firstDamageMessage: 0
   firstDamageText: 
   messageObject: {fileID: 1757578806}
@@ -2837,6 +2868,67 @@ MonoBehaviour:
   directionalSource: {fileID: 1325790367}
   pointSource: {fileID: 2019664369}
   gameManager: {fileID: 202964863}
+--- !u!1 &957025275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 957025276}
+  - component: {fileID: 957025277}
+  m_Layer: 0
+  m_Name: HunterSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &957025276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957025275}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 940998321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &957025277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957025275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe23a932dd321c54bbf3b5f4379c2fd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnObjectPrefab: {fileID: 3736243325563412955, guid: aff0d20e2d6b2be4e9b67e2044ca27f5, type: 3}
+  target: {fileID: 940998321}
+  otherBar: {fileID: 0}
+  spawnRangeXmax: 40
+  spawnRangeXmin: 20
+  spawnRangeYmax: 40
+  spawnRangeYmin: 20
+  angleRange: 180
+  maxSpawn: 5
+  spawnInfinite: 0
+  currentlySpawned: 0
+  spawnDelay: 2
+  SpawnObjectHolder: {fileID: 1777334504}
+  firstSpawnMessage: 1
+  firstSpawnMessageText: In this Epoch, you will encounter Hunters, which consumer
+    Others in the Dark... Enlighten Others before they are consumed
+  messageObject: {fileID: 1757578806}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2944,6 +3036,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 940998321}
+  zoomSpeed: 1
+  minZoom: 10
+  maxZoom: 20
   cameraMovementStyle: 1
   freeCameraMouseTracking: 0.5
   maxDistanceFromTarget: 10
@@ -2989,6 +3084,10 @@ PrefabInstance:
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2278078125148925350, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
+      propertyPath: firstScoreMessage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2278078125148925350, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
       propertyPath: gameOverPageIndex
       value: 2
       objectReference: {fileID: 0}
@@ -2998,11 +3097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2278078125148925350, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
       propertyPath: firstScoreMessageText
-      value: 'When you enlighten others, you enlighten yourself far more...
-
-
-        Enlightened
-        Others hover around you, but are also... drawn... to Others floating in darkness...'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4867940027157724160, guid: f976b93285ed5d14fa33d469345b311e, type: 3}
       propertyPath: m_Name
@@ -11421,6 +11516,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1266904481}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReadZoomInput
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InputManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429887281, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6766868123646520288, guid: ee0a8098c96767f46bc89ba62f91f2ae, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.9546767
@@ -13063,5 +13186,6 @@ SceneRoots:
   - {fileID: 182719206}
   - {fileID: 1283165298}
   - {fileID: 1777334504}
+  - {fileID: 785260954}
   - {fileID: 2075307938}
   - {fileID: 1495499233}
