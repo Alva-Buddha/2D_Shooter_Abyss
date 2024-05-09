@@ -161,6 +161,6 @@ public class InputManager : MonoBehaviour
     {
         Vector2 inputVector = context.ReadValue<Vector2>();
         zoomAxis = inputVector.y/120f;
-        Debug.Log("Zoom Axis: " + zoomAxis);
+        //Debug.Log("Zoom Axis: " + zoomAxis);
     }
 }

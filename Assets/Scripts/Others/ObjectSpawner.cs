@@ -62,7 +62,7 @@ public class ObjectSpawner : MonoBehaviour
     public GameObject messageObject = null;
 
     //List of all spawned objects
-    public static List<GameObject> SpawnedObjects = new List<GameObject>();
+    public List<GameObject> SpawnedObjects = new List<GameObject>();
 
 
     private void Start()
@@ -89,7 +89,7 @@ public class ObjectSpawner : MonoBehaviour
             // Spawn an SpawnObject
             SpawnSpawnObject(spawnLocation);
 
-            Debug.Log(SpawnedObjects.Count + " objects spawned.");
+            //Debug.Log(SpawnedObjects.Count + " objects spawned.");
         }
     }
 
@@ -124,11 +124,13 @@ public class ObjectSpawner : MonoBehaviour
             {
                 SpawnObjectGameObject.GetComponent<OtherDark>().PlayerObject = GameObject.FindWithTag("Player");
                 SpawnObjectGameObject.GetComponent<OtherDark>().otherBar = otherBar;
+                SpawnObjectGameObject.GetComponent<OtherDark>().Spawner = this;
             }
             if (SpawnObjectGameObject.GetComponent<Hunter>() != null)
             {
                 SpawnObjectGameObject.GetComponent<Hunter>().PlayerObject = GameObject.FindWithTag("Player");
                 SpawnObjectGameObject.GetComponent<Hunter>().otherBar = otherBar;
+                SpawnObjectGameObject.GetComponent<Hunter>().Spawner = this;    
             }
 
             // Incremment the spawn count

@@ -135,9 +135,11 @@ public class OtherDark : MonoBehaviour
         }
     }
 
+    public ObjectSpawner Spawner = null;
+
     void OnDestroy()
     {
-        ObjectSpawner.SpawnedObjects.Remove(this.gameObject);
+        Spawner.SpawnedObjects.Remove(this.gameObject);
     }
 
     /// <summary>

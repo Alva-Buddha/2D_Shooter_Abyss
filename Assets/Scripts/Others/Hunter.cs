@@ -109,9 +109,11 @@ public class Hunter : MonoBehaviour
         RotateTowardsMovement(movement, degreeMax);
     }
 
+    public ObjectSpawner Spawner = null;
+
     void OnDestroy()
     {
-        ObjectSpawner.SpawnedObjects.Remove(this.gameObject);
+        Spawner.SpawnedObjects.Remove(this.gameObject);
     }
 
     /// <summary>
