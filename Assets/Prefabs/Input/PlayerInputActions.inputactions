@@ -87,6 +87,17 @@
                 },
                 {
                     "name": "",
+                    "id": "67198bfe-549a-4890-83d9-6e5d2344cd79",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4b028b5e-6719-4cea-b98c-1ada630ac8f5",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -230,6 +241,17 @@
                 },
                 {
                     "name": "",
+                    "id": "ec0984f6-2ebc-4392-b2ad-d73b1df905a4",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "53273e97-d068-4a1f-b13b-cbce1753f4e4",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
@@ -288,6 +310,17 @@
                 {
                     "devicePath": "<Mouse>",
                     "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Touch",
+            "bindingGroup": "Touch",
+            "devices": [
+                {
+                    "devicePath": "<Touchscreen>",
+                    "isOptional": true,
                     "isOR": false
                 }
             ]

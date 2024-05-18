@@ -1675,7 +1675,7 @@ MonoBehaviour:
   maxSpawn: 100
   spawnInfinite: 0
   currentlySpawned: 0
-  spawnDelay: 0.5
+  spawnDelay: 0.05
   SpawnObjectHolder: {fileID: 1777334504}
   firstSpawnMessage: 0
   firstSpawnMessageText: ... Others are drawn to your light, but are also terrified
@@ -2995,8 +2995,8 @@ MonoBehaviour:
   spawnDelay: 2
   SpawnObjectHolder: {fileID: 785260954}
   firstSpawnMessage: 1
-  firstSpawnMessageText: In this Epoch, you will encounter Hunters, which consumer
-    Others in the Dark... Enlighten Others before they are consumed
+  firstSpawnMessageText: Hunters consume Others... Enlighten Others before they are
+    consumed
   messageObject: {fileID: 1757578806}
   SpawnedObjects: []
 --- !u!1 &963194225
