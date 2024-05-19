@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,12 @@ public class Avoidance : MonoBehaviour
     [Tooltip("The extent of avoidance")]
     public float avoidWeight = 1.0f;
 
+    public int randomSign;
+
     // Start is called before the first frame update
     void Start()
     {
-
+       randomSign = Random.Range(0, 2) * 2 - 1;
     }
 
     // Update is called once per frame
@@ -38,13 +41,16 @@ public class Avoidance : MonoBehaviour
                 float distance = directionToTarget.magnitude;
 
                 // More weight is given to objects closer to this object
-                float weight = Mathf.Clamp01((avoidRadius - distance) / avoidRadius) * avoidWeight;
-
-                //Debug.DrawRay(transform.position, directionToTarget, Color.blue);
+                float weight = Mathf.Clamp(
+                    (Mathf.Log(Mathf.Clamp01((avoidRadius - distance) / avoidRadius) + 1) * avoidWeight)
+                    ,0,1);
 
                 // Add to the avoidance vector, inversely proportional to the distance
                 avoidanceVector += directionToTarget.normalized * weight;
             }
+
+            //Debug.DrawRay(transform.position, avoidanceVector, Color.blue);
+
         }
 
         return avoidanceVector;
@@ -53,8 +59,8 @@ public class Avoidance : MonoBehaviour
     public Vector3 GetAngleAvoidanceVector(Vector3 avoidanceVectorLocal)
     {
         // Rotate the direction to target by avoidance angle to either left or right
-        Vector3 angleAvoidanceVector = Quaternion.Euler(0, 0, avoidAngle * Random.Range(-1f, 1f)) * avoidanceVectorLocal;
-        //Debug.DrawRay(transform.position, rotatedDirection, Color.yellow);
+        Vector3 angleAvoidanceVector = Quaternion.Euler(0, 0, avoidAngle * Random.Range(0.8f, 1.2f) * randomSign) * avoidanceVectorLocal;
+        //Debug.DrawRay(transform.position, angleAvoidanceVector.normalized, Color.red);
         return angleAvoidanceVector;
     }
 }

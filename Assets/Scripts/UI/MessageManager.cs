@@ -84,7 +84,18 @@ public class MessageManager : MonoBehaviour
     // Update the panel size to fit the message
     private void UpdatePanelSize()
     {
-        rt.sizeDelta = new Vector2(defaultSize.x, defaultSize.y + (messageText.preferredHeight)-defaultTextHeight);
+        Canvas.ForceUpdateCanvases(); // Update the canvas to get the correct preferred height
+        float paddingFactor = 0.1f;
+
+        float previousHeight = rt.sizeDelta.y;
+        rt.sizeDelta = new Vector2(defaultSize.x, defaultSize.y + (messageText.preferredHeight - defaultTextHeight)*(1f+paddingFactor));
+
+        // Calculate the change in height
+        float deltaHeight = rt.sizeDelta.y - previousHeight;
+
+        // Move the messageText down/up based on the change in height
+        messageText.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0, deltaHeight*paddingFactor*0.5f);
+
         //Debug.Log("update panel size called with preferred height = " + messageText.preferredHeight);
     }
 

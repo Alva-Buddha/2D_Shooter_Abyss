@@ -104,7 +104,7 @@ public class OtherDark : MonoBehaviour
         moveDirection += ((inertiaFactor * this.transform.forward) + RandomMove());
         //Debug.Log("Final (incl. inertia) x:" + moveDirection.x + " and y:" + moveDirection.y);
         Vector3 movement = (moveSpeedBase * Time.deltaTime * moveDirection.normalized)
-            + (moveSpeedBase * Time.deltaTime * avoidDirection.normalized)
+            + (moveSpeedBase * Time.deltaTime * avoidDirection)
             + (moveSpeedBase * Time.deltaTime * angleAvoidDirection.normalized);
         movement.z = 0;
         transform.position += movement;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class which handles camera movement
@@ -15,6 +16,9 @@ public class CameraController : MonoBehaviour
     [Header("GameObject References")]
     [Tooltip("The target to follow with this camera")]
     public Transform target = null;
+
+    [Tooltip("zoombar to map to camera zoom")]
+    public Slider zoomBar = null;
 
     [Header("CameraZoom")]
     [Tooltip("The speed at which the camera zooms in and out")]
@@ -68,6 +72,12 @@ public class CameraController : MonoBehaviour
         if (inputManager == null)
         {
             Debug.LogWarning("The Camera Controller can not find an Input Manager in the scene");
+        }
+
+        // Set up the event
+        if (zoomBar != null)
+        {
+            zoomBar.onValueChanged.AddListener(HandleZoomInput);
         }
     }
 
@@ -173,13 +183,26 @@ public class CameraController : MonoBehaviour
         return result;
     }
 
-    private void ZoomCamera()
+    public void HandleZoomInput(float value)
+    {
+        if (playerCamera.orthographic)
+        {
+            playerCamera.orthographicSize = Mathf.Lerp(minZoom, maxZoom, value);
+        }
+    }
+
+    public void ZoomCamera()
     {
         if (playerCamera.orthographic)
         {
             float scrollInput = inputManager.zoomAxis;
+            //Debug.Log("HandleZoomInput called. value: " + scrollInput);
             playerCamera.orthographicSize -= scrollInput * zoomSpeed;
             playerCamera.orthographicSize = Mathf.Clamp(playerCamera.orthographicSize, minZoom, maxZoom);
+            if (zoomBar != null)
+            {
+                zoomBar.value = (playerCamera.orthographicSize - minZoom) / (maxZoom - minZoom);
+            }    
         }
     }
 }

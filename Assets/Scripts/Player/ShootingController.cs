@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -115,7 +116,10 @@ public class ShootingController : MonoBehaviour
         {
             if (inputManager.firePressed || inputManager.fireHeld)
             {
-                Fire();
+                if(!EventSystem.current.IsPointerOverGameObject())
+                {
+                    Fire();
+                }
             }
         }   
     }

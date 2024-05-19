@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// This class handles the health state of a game object.
@@ -14,6 +15,10 @@ public class Health : MonoBehaviour
     public int teamId = 0;
     [Tooltip("Health bar")]
     public Slider healthBarSlider = null;
+    [Tooltip("Health delta")]
+    public TextMeshProUGUI healthText = null;
+    [Tooltip("Health bar flash time")]
+    public float flashTime = 1f;
 
     [Header("Health Settings")]
     [Tooltip("The default health value")]
@@ -174,6 +179,12 @@ public class Health : MonoBehaviour
             {
                 healthBarSlider.value = currentHealth;
             }
+            if (healthText != null)
+            {
+                healthText.text = "-" + damageAmount.ToString();
+                healthText.color = Color.red;
+                StartCoroutine(FadeOutText());
+            }
             CheckDeath();
         }
     }
@@ -193,6 +204,12 @@ public class Health : MonoBehaviour
         if (healthBarSlider != null)
         {
             healthBarSlider.value = currentHealth;
+        }
+        if (healthText != null)
+        {
+            healthText.text = "+" + healingAmount.ToString();
+            healthText.color = Color.green;
+            StartCoroutine(FadeOutText());
         }
         CheckDeath();
     }
@@ -281,4 +298,18 @@ public class Health : MonoBehaviour
         }
         Destroy(this.gameObject);
     }
+
+    IEnumerator FadeOutText()
+    {
+        Color originalColor = healthText.color;
+        for (float t = 0.01f; t < flashTime; t += Time.deltaTime)
+        {
+            // At each step, decrease the alpha value
+            healthText.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(originalColor.a, 0, t / flashTime));
+            yield return null;
+        }
+        // Finally set the alpha to 0
+        healthText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+    }
+
 }

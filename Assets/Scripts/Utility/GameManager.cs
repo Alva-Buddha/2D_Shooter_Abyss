@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
         }
         if (scoreBar!=null)
         {
-            scoreBar.maxValue = numberOfEnemiesFoundAtStart;
+            scoreBar.maxValue = enemiesToDefeat;
         }
     }
 
@@ -275,6 +275,7 @@ public class GameManager : MonoBehaviour
                 instance.firstScoreFlag = true;
             }
         }
+        instance.scoreBar.value = score;
         SaveHighScore();
         UpdateUIElements();
     }
