@@ -43,7 +43,7 @@ public class Avoidance : MonoBehaviour
                 // More weight is given to objects closer to this object
                 float weight = Mathf.Clamp(
                     (Mathf.Log(Mathf.Clamp01((avoidRadius - distance) / avoidRadius) + 1) * avoidWeight)
-                    ,0,1);
+                    ,0,2);
 
                 // Add to the avoidance vector, inversely proportional to the distance
                 avoidanceVector += directionToTarget.normalized * weight;

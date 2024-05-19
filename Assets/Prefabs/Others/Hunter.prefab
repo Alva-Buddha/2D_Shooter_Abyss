@@ -127,6 +127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamId: 2
   healthBarSlider: {fileID: 0}
+  healthText: {fileID: 0}
+  flashTime: 1
   defaultHealth: 10
   maximumHealth: 10
   currentHealth: 10
@@ -186,9 +188,10 @@ MonoBehaviour:
   avoidLayers:
     serializedVersion: 2
     m_Bits: 448
-  avoidRadius: 9
-  avoidAngle: 120
+  avoidRadius: 12
+  avoidAngle: 105
   avoidWeight: 20
+  randomSign: 0
 --- !u!114 &3856725607855406835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,9 +220,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neighborRadius: 5
   avoidOtherRadius: 4
-  alignmentWeight: 1
+  alignmentWeight: 2
   separationWeight: 1
-  cohesionWeight: 0.2
+  cohesionWeight: 1
   neighborLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -250,6 +253,7 @@ MonoBehaviour:
   HealAmount: 5
   PlayerObject: {fileID: 0}
   otherBar: {fileID: 0}
+  Spawner: {fileID: 0}
 --- !u!114 &9169441479255770659
 MonoBehaviour:
   m_ObjectHideFlags: 0

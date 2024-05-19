@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour
     public float maxDistanceFromTarget = 5.0f;
 
     [Tooltip("The z coordinate to use for the camera position")]
-    public float cameraZCoordinate = -10.0f;
+    public float cameraZCoordinate = -5.0f;
 
     //The input manager that reads in input
     private InputManager inputManager;

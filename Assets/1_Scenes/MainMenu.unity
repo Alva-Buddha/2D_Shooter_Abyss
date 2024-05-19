@@ -399,6 +399,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamId: 0
   healthBarSlider: {fileID: 0}
+  healthText: {fileID: 0}
+  flashTime: 1
   defaultHealth: 120
   maximumHealth: 120
   currentHealth: 120
@@ -561,7 +563,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: -3
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

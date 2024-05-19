@@ -37,7 +37,10 @@ public class ShootingController : MonoBehaviour
 
     [Header("Effects")]
     [Tooltip("The effect to create when this fires")]
-    public GameObject fireEffect;
+    public AudioClip fireEffect;
+
+    private AudioSource audioSource = null;
+
     [Tooltip("Whether shooting drains health")]
     public bool fireDamageCheck = false;
     [Tooltip("Health drain from shooting")]
@@ -83,6 +86,11 @@ public class ShootingController : MonoBehaviour
         if (messageObject != null)
         {
             messageManager = messageObject.GetComponent<MessageManager>();
+        }
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogError("No AudioSource component found on this GameObject. An AudioSource is required to play the fire sound.");
         }
     }
 
@@ -136,9 +144,9 @@ public class ShootingController : MonoBehaviour
             // Launches a projectile
             SpawnProjectile();
 
-            if (fireEffect != null)
+            if (fireEffect != null && audioSource != null)
             {
-                Instantiate(fireEffect, transform.position, transform.rotation, null);
+                audioSource.PlayOneShot(fireEffect,1.0f);
             }
             if (fireDamageCheck && HealthImpact != null)
             {

@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     [Tooltip("Health delta")]
     public TextMeshProUGUI healthText = null;
     [Tooltip("Health bar flash time")]
-    public float flashTime = 1f;
+    public float flashTime = 0.5f;
 
     [Header("Health Settings")]
     [Tooltip("The default health value")]
@@ -181,8 +181,8 @@ public class Health : MonoBehaviour
             }
             if (healthText != null)
             {
-                healthText.text = "-" + damageAmount.ToString();
                 healthText.color = Color.red;
+                healthText.text = "-" + damageAmount.ToString();
                 StartCoroutine(FadeOutText());
             }
             CheckDeath();
@@ -207,8 +207,8 @@ public class Health : MonoBehaviour
         }
         if (healthText != null)
         {
-            healthText.text = "+" + healingAmount.ToString();
             healthText.color = Color.green;
+            healthText.text = "+" + healingAmount.ToString();
             StartCoroutine(FadeOutText());
         }
         CheckDeath();
