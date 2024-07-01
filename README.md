@@ -1,0 +1,1 @@
+2.5D "shooter" developed on top of evaluation project for Coursera course on Unity. Includes CC0 art assets, AI scripts developed by Alva-Buddha, and updated template scripts (E.g. game-manager) from professor Brian Winn's course tutorial on 2D shooters. Tutorial asset in 2D_Shooter_Backup can be compared with current build for a sense of the changes.
